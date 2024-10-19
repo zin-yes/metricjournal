@@ -1,7 +1,8 @@
-import { db } from "@/server/db";
+"use client";
+import { api } from "@/trpc/react";
 
-export default async function IndexPage() {
-  const data = await db.query.entries.findMany();
+export default function IndexPage() {
+  const data = api.entries.getAllEntries.useQuery();
   return (
     <main>
       Example data fetched from workers:
