@@ -7,7 +7,7 @@
     "build": "PUBLIC_URL=$CF_PAGES_URL next build",
     "start": "next start",
     "lint": "next lint",
-    "pages:build": "bunx @cloudflare/next-on-pages",
+    "pages:build": "PUBLIC_URL=$CF_PAGES_URL bunx @cloudflare/next-on-pages",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
     "db:migrate:local": "wrangler d1 migrations apply metricjournal --local",
