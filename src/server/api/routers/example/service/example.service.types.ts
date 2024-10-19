@@ -1,0 +1,3 @@
+interface ExampleResult {
+  hello: string;
+}

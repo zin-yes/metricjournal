@@ -22,7 +22,7 @@ function getLocalD1DB() {
 
 export default defineConfig({
   dialect: "sqlite",
-  schema: "./src/server/schema.ts",
+  schema: "./src/server/database/schema.ts",
   out: "./drizzle",
   ...(process.env.NODE_ENV === "production"
     ? {

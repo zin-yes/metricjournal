@@ -2,11 +2,17 @@
 import { api } from "@/trpc/react";
 
 export default function IndexPage() {
-  const data = api.entries.getAllEntries.useQuery();
+  const data = api.example.example.useQuery();
   return (
     <main>
       Example data fetched from workers:
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <pre>
+        {data.isSuccess
+          ? JSON.stringify(data.data, null, 2)
+          : data.isError
+          ? "Error"
+          : "Loading..."}
+      </pre>
     </main>
   );
 }
