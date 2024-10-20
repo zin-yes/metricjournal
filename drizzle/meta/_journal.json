@@ -8,6 +8,27 @@
       "when": 1729295267464,
       "tag": "0000_skinny_naoko",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1729388758341,
+      "tag": "0001_romantic_angel",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1729389708040,
+      "tag": "0002_bizarre_king_bedlam",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1729398604152,
+      "tag": "0003_cuddly_wrecking_crew",
+      "breakpoints": true
     }
   ]
 }

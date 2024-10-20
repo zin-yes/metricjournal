@@ -1,3 +1,0 @@
-interface ExampleResult {
-  hello: string;
-}

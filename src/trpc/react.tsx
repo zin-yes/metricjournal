@@ -13,27 +13,15 @@ import { createQueryClient } from "@/trpc/query-client";
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
 const getQueryClient = () => {
   if (typeof window === "undefined") {
-    // Server: always make a new query client
     return createQueryClient();
   }
-  // Browser: use singleton pattern to keep the same query client
   return (clientQueryClientSingleton ??= createQueryClient());
 };
 
 export const api = createTRPCReact<AppRouter>();
 
-/**
- * Inference helper for inputs.
- *
- * @example type HelloInput = RouterInputs['example']['hello']
- */
 export type RouterInputs = inferRouterInputs<AppRouter>;
 
-/**
- * Inference helper for outputs.
- *
- * @example type HelloOutput = RouterOutputs['example']['hello']
- */
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
@@ -71,6 +59,6 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
 
 function getBaseUrl() {
   if (typeof window !== "undefined") return window.location.origin;
-  if (process.env.PUBLIC_URL) return `https://${process.env.PUBLIC_URL}`;
+  if (process.env.CF_PAGES_URL) return `https://${process.env.CF_PAGES_URL}`;
   return `http://localhost:${process.env.PORT ?? 3000}`;
 }
