@@ -75,8 +75,8 @@ export default function IndexPage() {
   });
   // TODO: Add feedback/visual indicator on refetch
   return (
-    <main className="w-full p-4 min-h-[100vh]">
-      <div className="w-full flex flex-col gap-2">
+    <main className="w-full p-4 md:p-6 min-h-[100vh] flex flex-col items-center">
+      <div className="w-full flex flex-col gap-2 max-w-[700px]">
         <header>
           <h1 className="text-xl font-bold">MetricJournal</h1>
           <p>Live intentionally by tracking and reviewing your day.</p>

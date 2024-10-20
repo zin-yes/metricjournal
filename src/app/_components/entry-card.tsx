@@ -158,8 +158,8 @@ export function EntryCard({
 }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="p-1 px-4 rounded-t-2xl border w-fit border-b-0">
-        <span className="text-sm text-muted-foreground">
+      <div className=" px-3 rounded-t-2xl border w-fit border-b-0">
+        <span className="text-xs text-muted-foreground">
           {moment(entry.createdAt).format("hh:mm a")}
         </span>
       </div>
@@ -174,8 +174,8 @@ export function EntryCard({
           </span>
         </CardFooter>
       </Card>
-      <div className="p-1 px-4 rounded-b-2xl border w-fit border-t-0">
-        <span className="text-sm text-muted-foreground">
+      <div className=" px-3 rounded-b-2xl border w-fit border-t-0">
+        <span className="text-xs text-muted-foreground">
           {entry.completedAt
             ? moment(entry.completedAt).format("hh:mm a")
             : "Incomplete"}
