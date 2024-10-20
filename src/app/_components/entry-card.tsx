@@ -157,17 +157,31 @@ export function EntryCard({
   entry: Entry;
 }) {
   return (
-    <Card onClick={() => handleOpen()} className="cursor-pointer">
-      <CardHeader>
-        <CardTitle>{entry.title}</CardTitle>
-      </CardHeader>
-      <CardContent>{entry.note}</CardContent>
-      <CardFooter>
-        <span className="text-muted-foreground">
-          Last edited {moment(entry.updatedAt).fromNow()}
+    <div className="flex flex-col items-center">
+      <div className="p-1 px-4 rounded-t-2xl border w-fit border-b-0">
+        <span className="text-sm text-muted-foreground">
+          {moment(entry.createdAt).format("hh:mm a")}
         </span>
-      </CardFooter>
-    </Card>
+      </div>
+      <Card onClick={() => handleOpen()} className="w-full cursor-pointer">
+        <CardHeader>
+          <CardTitle>{entry.title}</CardTitle>
+        </CardHeader>
+        <CardContent>{entry.note}</CardContent>
+        <CardFooter>
+          <span className="text-muted-foreground">
+            Last edited {moment(entry.updatedAt).fromNow()}
+          </span>
+        </CardFooter>
+      </Card>
+      <div className="p-1 px-4 rounded-b-2xl border w-fit border-t-0">
+        <span className="text-sm text-muted-foreground">
+          {entry.completedAt
+            ? moment(entry.completedAt).format("hh:mm a")
+            : "Incomplete"}
+        </span>
+      </div>
+    </div>
   );
 }
 
