@@ -41,7 +41,7 @@ import { Entry } from "@/server/database/schema/entires";
 import { Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 
-export function EntryCardWithEditModal({
+export default function EntryCardWithEditModal({
   entryDeleteMutation,
   entryUpdateMutation,
   entry,
