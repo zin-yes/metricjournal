@@ -19,8 +19,7 @@ import { Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 
 export function SignUp() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
@@ -41,7 +40,7 @@ export function SignUp() {
   const [loading, setLoading] = useState(false);
 
   return (
-    <Card className="z-50 rounded-md rounded-t-none max-w-md">
+    <Card className="z-50 rounded-md max-w-md">
       <CardHeader>
         <CardTitle className="text-lg md:text-xl">Sign Up</CardTitle>
         <CardDescription className="text-xs md:text-sm">
@@ -50,38 +49,22 @@ export function SignUp() {
       </CardHeader>
       <CardContent>
         <div className="grid gap-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="first-name">First name</Label>
-              <Input
-                id="first-name"
-                placeholder="Max"
-                required
-                onChange={(e) => {
-                  setFirstName(e.target.value);
-                }}
-                value={firstName}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="last-name">Last name</Label>
-              <Input
-                id="last-name"
-                placeholder="Robinson"
-                required
-                onChange={(e) => {
-                  setLastName(e.target.value);
-                }}
-                value={lastName}
-              />
-            </div>
-          </div>
+          <Label htmlFor="display-name">Display name</Label>
+          <Input
+            id="display-name"
+            placeholder="Enter your display name..."
+            required
+            onChange={(e) => {
+              setDisplayName(e.target.value);
+            }}
+            value={displayName}
+          />
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="Enter your email..."
               required
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -93,20 +76,22 @@ export function SignUp() {
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
+              type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               autoComplete="new-password"
-              placeholder="Password"
+              placeholder="Enter your password..."
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Confirm Password</Label>
+            <Label htmlFor="password">Confirm password</Label>
             <Input
+              type="password"
               id="password_confirmation"
               value={passwordConfirmation}
               onChange={(event) => setPasswordConfirmation(event.target.value)}
               autoComplete="new-password"
-              placeholder="Confirm Password"
+              placeholder="Re-enter your password..."
             />
           </div>
           <div className="grid gap-2">
@@ -150,7 +135,7 @@ export function SignUp() {
               await authClient.signUp.email({
                 email,
                 password,
-                name: `${firstName} ${lastName}`,
+                name: displayName,
                 image: image ? await convertImageToBase64(image) : "",
                 callbackURL: "/",
                 fetchOptions: {
@@ -174,18 +159,6 @@ export function SignUp() {
             )}
           </Button>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              className="w-full gap-2"
-              onClick={async () => {
-                await authClient.signIn.social({
-                  provider: "github",
-                  callbackURL: "/",
-                });
-              }}
-            >
-              <GitHubLogoIcon />
-            </Button>
             <Button
               variant="outline"
               className="w-full gap-2"
@@ -232,38 +205,9 @@ export function SignUp() {
                 />
               </svg>
             </Button>
-            <Button
-              variant="outline"
-              className="w-full gap-2"
-              onClick={async () => {
-                await authClient.signIn.social({
-                  provider: "microsoft",
-                  callbackURL: "/",
-                });
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="1.2em"
-                height="1.2em"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="currentColor"
-                  d="M2 3h9v9H2zm9 19H2v-9h9zM21 3v9h-9V3zm0 19h-9v-9h9z"
-                ></path>
-              </svg>
-            </Button>
           </div>
         </div>
       </CardContent>
-      <CardFooter>
-        <div className="flex justify-center w-full border-t py-4">
-          <p className="text-center text-xs text-neutral-500">
-            Secured by <span className="text-orange-400">better-auth.</span>
-          </p>
-        </div>
-      </CardFooter>
     </Card>
   );
 }

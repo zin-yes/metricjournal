@@ -5,7 +5,6 @@ import { getBaseUrl } from "./utils";
 
 export const auth = betterAuth({
   baseURL: getBaseUrl(),
-  basePath: "/api/auth",
   secret: process.env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, {
     provider: "sqlite",
@@ -18,6 +17,10 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    },
+    discord: {
+      clientId: process.env.DISCORD_CLIENT_ID ?? "",
+      clientSecret: process.env.DISCORD_CLIENT_SECRET ?? "",
     },
   },
 });
