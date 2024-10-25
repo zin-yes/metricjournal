@@ -41,7 +41,7 @@ export default function SignIn() {
             <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="Enter your email..."
               required
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -61,10 +61,11 @@ export default function SignIn() {
             </div>
             <Input
               id="password"
+              type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               autoComplete="password"
-              placeholder="Password"
+              placeholder="Enter your password..."
             />
           </div>
           <div className="flex items-center gap-2">
