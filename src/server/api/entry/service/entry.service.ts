@@ -7,8 +7,11 @@ import {
   type ReadAllResult,
   type ReadResult,
   UpdateEntry,
-  type UpdateResult
+  type UpdateResult,
 } from "./entry.service.types";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { authService } from "../../auth/service/auth.service";
 
 class EntryService {
   private readonly logger = new Logger(EntryService.name);
@@ -16,39 +19,41 @@ class EntryService {
   public async create(entry: CreateEntry): Promise<CreateResult> {
     this.logger.debug("Creating a new entry in the database.");
 
-    // TODO: Add auth
-    const userId = "";
+    const user = await authService.getUser();
 
-
-    return await entryRepository.create(userId, entry);
+    return await entryRepository.create(user.id, entry);
   }
-  // TODO: Add auth
-  public async readAll(): Promise<ReadAllResult> {
+
+  public async readAll(limit: number, offset: number): Promise<ReadAllResult> {
     this.logger.debug(`Reading all entries from the database.`);
-    // TODO: Add auth
-    const userId = "";
-    return await entryRepository.readAll(userId, 50, 0);
+
+    const user = await authService.getUser();
+
+    return await entryRepository.readAll(user.id, limit, offset);
   }
 
   public async read(id: string): Promise<ReadResult> {
     this.logger.debug(`Reading an entry from the database with id ${id}.`);
-    // TODO: Add auth
-    const userId = "";
-    return await entryRepository.read(userId, id);
+
+    const user = await authService.getUser();
+
+    return await entryRepository.read(user.id, id);
   }
 
   public async update(id: string, entry: UpdateEntry): Promise<UpdateResult> {
     this.logger.debug(`Updating an entry from the database with id ${id}.`);
-    // TODO: Add auth
-    const userId = "";
-    return await entryRepository.update(userId, id, entry);
+
+    const user = await authService.getUser();
+
+    return await entryRepository.update(user.id, id, entry);
   }
 
   public async delete(id: string): Promise<DeleteResult> {
     this.logger.debug(`Deleting an entry from the database with id ${id}.`);
-    // TODO: Add auth
-    const userId = "";
-    return await entryRepository.delete(userId, id);
+
+    const user = await authService.getUser();
+
+    return await entryRepository.delete(user.id, id);
   }
 }
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { createEntrySchema } from "@/server/api/routers/entry/entry.input";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -17,7 +16,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Entry } from "@/server/database/schema/entires";
 
 import {
   Credenza,
@@ -32,22 +30,44 @@ import {
 import { useRef, useState } from "react";
 import EntryCardWithEditModal from "./_components/entry-card";
 import ModeToggle from "./_components/mode-toggle";
+import { useToast } from "@/hooks/use-toast";
+import { Entry } from "@/database/schema";
+import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
+import { authClient } from "@/lib/auth-client";
+import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { createEntrySchema } from "@/server/api/entry/entry.input";
+import Link from "next/link";
 
 export default function IndexPage() {
-  const entryReadAllQuery = api.entry.readAll.useQuery(undefined, {
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-  });
+  const { toast } = useToast();
+
+  const entryReadAllQuery = api.entry.readAll.useQuery(
+    {
+      limit: 50,
+      offset: 0,
+    },
+    {
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    }
+  );
   const entryCreateMutation = api.entry.create.useMutation({
     onSettled: () => {
       entryReadAllQuery.refetch();
     },
     onSuccess: () => {
-      // TODO: Add toast for success
+      toast({
+        title: "Entry created",
+        description: "Your entry has been created successfully",
+      });
     },
     onError: (error) => {
-      // TODO: Add toast for error
+      toast({
+        title: "Error",
+        description: error.message,
+      });
     },
   });
 
@@ -56,10 +76,16 @@ export default function IndexPage() {
       entryReadAllQuery.refetch();
     },
     onSuccess: () => {
-      // TODO: Add toast for success
+      toast({
+        title: "Entry updated",
+        description: "Your entry has been updated successfully",
+      });
     },
     onError: (error) => {
-      // TODO: Add toast for error
+      toast({
+        title: "Error",
+        description: error.message,
+      });
     },
   });
   const entryDeleteMutation = api.entry.delete.useMutation({
@@ -67,18 +93,50 @@ export default function IndexPage() {
       entryReadAllQuery.refetch();
     },
     onSuccess: () => {
-      // TODO: Add toast for success
+      toast({
+        title: "Entry deleted",
+        description: "Your entry has been deleted successfully",
+      });
     },
     onError: (error) => {
-      // TODO: Add toast for error
+      toast({
+        title: "Error",
+        description: error.message,
+      });
     },
   });
-  // TODO: Add feedback/visual indicator on refetch
+
+  const { data } = authClient.useSession();
+
   return (
     <main className="w-full p-4 md:p-6 min-h-[100vh] flex flex-col items-center">
       <div className="w-full flex flex-col gap-2 max-w-[700px]">
         <header>
-          <h1 className="text-xl font-bold">MetricJournal</h1>
+          <div className="flex flex-row justify-between items-center">
+            <h1 className="text-xl font-bold">MetricJournal</h1>
+            {data?.user ? (
+              <div className="flex flex-row gap-2 items-center">
+                <Button asChild variant="outline">
+                  <Link href="/signout">Sign Out</Link>
+                </Button>
+                <Avatar>
+                  <AvatarImage src={data?.user.image} />
+                  <AvatarFallback>{data?.user.name?.[0]}</AvatarFallback>
+                </Avatar>
+              </div>
+            ) : (
+              <div className="flex flex-row gap-2">
+                <Button asChild variant="outline">
+                  <Link href="/signin">Sign In</Link>
+                </Button>
+
+                <Button asChild variant="outline">
+                  <Link href="/signup">Sign Up</Link>
+                </Button>
+              </div>
+            )}
+          </div>
+          {data?.user.name && <span>Hello, {data?.user.name}</span>}
           <p>Live intentionally by tracking and reviewing your day.</p>
         </header>
         <div className="w-full flex flex-row gap-2">
@@ -123,19 +181,20 @@ function AddEntryModalButton({
   const form = useForm<z.infer<typeof createEntrySchema>>({
     resolver: zodResolver(createEntrySchema),
     defaultValues: {
-      tags: [],
       note: "",
       title: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof createEntrySchema>) {
-    form.reset();
     entryCreateMutation
       .mutateAsync({
         ...values,
       })
-      .then(() => setOpen(false));
+      .then(() => {
+        setOpen(false);
+        form.reset();
+      });
   }
 
   const titleInputRef = useRef<HTMLInputElement>(null);
@@ -166,6 +225,11 @@ function AddEntryModalButton({
                         <FormLabel>Title</FormLabel>
                         <FormControl>
                           <Input
+                            className={
+                              form.getFieldState<"title">("title").error
+                                ? "outline-destructive border-destructive"
+                                : ""
+                            }
                             maxLength={256}
                             minLength={1}
                             placeholder="Enter a title..."
@@ -184,9 +248,8 @@ function AddEntryModalButton({
                       <FormItem>
                         <FormLabel>Note</FormLabel>
                         <FormControl>
-                          <Textarea
+                          <AutosizeTextarea
                             maxLength={4096}
-                            minLength={1}
                             placeholder="Enter a note..."
                             {...field}
                           />

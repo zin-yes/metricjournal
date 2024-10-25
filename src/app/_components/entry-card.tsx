@@ -35,19 +35,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { updateEntrySchema } from "@/server/api/routers/entry/entry.input";
-import { Entry } from "@/server/database/schema/entires";
 import { Trash2 } from "lucide-react";
-import { useRef, useState } from "react";
+import React, { useId, useRef, useState } from "react";
+import { Entry } from "@/database/schema";
+import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
+import { updateEntrySchema } from "@/server/api/entry/entry.input";
 
 export default function EntryCardWithEditModal({
   entryDeleteMutation,
   entryUpdateMutation,
   entry,
 }: {
-  entryUpdateMutation: ReturnType<typeof api.entry.update.useMutation>;
   entryDeleteMutation: ReturnType<typeof api.entry.delete.useMutation>;
+  entryUpdateMutation: ReturnType<typeof api.entry.update.useMutation>;
   entry: Entry;
 }) {
   const [open, setOpen] = useState(false);
@@ -62,15 +62,16 @@ export default function EntryCardWithEditModal({
   const form = useForm<z.infer<typeof updateEntrySchema>>({
     resolver: zodResolver(updateEntrySchema),
     defaultValues: {
-      tags: entry.tags,
-      note: entry.note,
-      title: entry.title,
+      title: entry.title ?? "",
+      note: entry.note ?? "",
     },
   });
 
   function onSubmit(values: z.infer<typeof updateEntrySchema>) {
-    console.log("on submit");
-    entryUpdateMutation.mutate({ ...values, id: entry.id });
+    entryUpdateMutation.mutateAsync({ ...values, id: entry.id }).then(() => {
+      setOpen(false);
+      form.reset();
+    });
   }
 
   const titleInputRef = useRef<HTMLInputElement>(null);
@@ -99,6 +100,11 @@ export default function EntryCardWithEditModal({
                         <FormLabel>Title</FormLabel>
                         <FormControl>
                           <Input
+                            className={
+                              form.getFieldState<"title">("title").error
+                                ? "outline-destructive border-destructive"
+                                : ""
+                            }
                             maxLength={256}
                             minLength={1}
                             placeholder="Enter a title..."
@@ -117,9 +123,15 @@ export default function EntryCardWithEditModal({
                       <FormItem>
                         <FormLabel>Note</FormLabel>
                         <FormControl>
-                          <Textarea
+                          <AutosizeTextarea
+                            className={
+                              form.getFieldState<"note">("note").error
+                                ? "outline-destructive border-destructive"
+                                : ""
+                            }
+                            maxHeight={250}
+                            minHeight={30}
                             maxLength={4096}
-                            minLength={1}
                             placeholder="Enter a note..."
                             {...field}
                           />
@@ -136,7 +148,10 @@ export default function EntryCardWithEditModal({
               <EntryDeleteModal
                 entry={entry}
                 entryDeleteMutation={entryDeleteMutation}
-                onDelete={() => setOpen(false)}
+                onDelete={() => {
+                  setOpen(false);
+                  form.reset();
+                }}
               />
               <CredenzaClose asChild>
                 <Button variant="outline">Close</Button>
@@ -149,6 +164,17 @@ export default function EntryCardWithEditModal({
   );
 }
 
+function contentToHtml(text: string) {
+  return text.split("\n").map((item, index) => {
+    return (
+      <React.Fragment key={index}>
+        {item}
+        <br />
+      </React.Fragment>
+    );
+  });
+}
+
 export function EntryCard({
   handleOpen,
   entry,
@@ -158,7 +184,7 @@ export function EntryCard({
 }) {
   return (
     <div className="flex flex-col items-center">
-      <div className=" px-3 rounded-t-2xl border w-fit border-b-0">
+      <div className="px-3 rounded-t-[var(--radius)] border w-fit border-b-0 h-5 flex justify-center items-end">
         <span className="text-xs text-muted-foreground">
           {moment(entry.createdAt).format("hh:mm a")}
         </span>
@@ -167,21 +193,50 @@ export function EntryCard({
         <CardHeader>
           <CardTitle>{entry.title}</CardTitle>
         </CardHeader>
-        <CardContent>{entry.note}</CardContent>
+        <CardContent>
+          {entry.note ? (
+            <ShowMore content={entry.note ?? ""} />
+          ) : (
+            <span className="text-muted-foreground">Click to edit...</span>
+          )}
+        </CardContent>
         <CardFooter>
-          <span className="text-muted-foreground">
+          <span className="text-muted-foreground text-sm">
             Last edited {moment(entry.updatedAt).fromNow()}
           </span>
         </CardFooter>
       </Card>
-      <div className=" px-3 rounded-b-2xl border w-fit border-t-0">
-        <span className="text-xs text-muted-foreground">
-          {entry.completedAt
-            ? moment(entry.completedAt).format("hh:mm a")
-            : "Incomplete"}
-        </span>
-      </div>
+      {entry.completedAt && (
+        <div className="px-3 rounded-b-[var(--radius)] border w-fit border-t-0 h-5 flex justify-center items-center">
+          <span className="text-xs text-muted-foreground">
+            {moment(entry.completedAt).format("hh:mm a")}
+          </span>
+        </div>
+      )}
     </div>
+  );
+}
+
+function ShowMore({ content }: { content: string }) {
+  const [showMore, setShowMore] = useState(false);
+
+  return (
+    <>
+      {showMore
+        ? contentToHtml(content)
+        : contentToHtml(content.substring(0, 128))}
+      {content.length > 128 && (
+        <button
+          onClick={(event) => {
+            event.stopPropagation();
+            setShowMore(!showMore);
+          }}
+          className="text-muted-foreground hover:font-underline"
+        >
+          {showMore ? "show less..." : "show more..."}
+        </button>
+      )}
+    </>
   );
 }
 
@@ -214,8 +269,8 @@ export function EntryDeleteModal({
                   id: entry.id,
                 })
                 .then(() => {
-                  setOpen(false);
                   onDelete();
+                  setOpen(false);
                 });
             }}
             variant="destructive"

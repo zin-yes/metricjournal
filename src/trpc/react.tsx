@@ -9,6 +9,7 @@ import SuperJSON from "superjson";
 
 import { type AppRouter } from "@/server/api/root";
 import { createQueryClient } from "@/trpc/query-client";
+import { getBaseUrl } from "@/lib/utils";
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
 const getQueryClient = () => {
@@ -55,10 +56,4 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
       </api.Provider>
     </QueryClientProvider>
   );
-}
-
-function getBaseUrl() {
-  if (typeof window !== "undefined") return window.location.origin;
-  if (process.env.CF_PAGES_URL) return `https://${process.env.CF_PAGES_URL}`;
-  return `http://localhost:${process.env.PORT ?? 3000}`;
 }

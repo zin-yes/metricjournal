@@ -4,6 +4,7 @@ import {
   deleteEntrySchema,
   readEntrySchema,
   updateEntrySchema,
+  readAllEntrySchema,
 } from "./entry.input";
 import { entryService } from "./service/entry.service";
 
@@ -12,18 +13,27 @@ export const entryRouter = createTRPCRouter({
   create: publicProcedure
     .input(createEntrySchema)
     .mutation(async ({ ctx, input }) => {
-      return entryService.create(input);
+      return entryService.create({
+        note: input.note ?? null,
+        title: input.title,
+      });
     }),
-  readAll: publicProcedure.query(async ({ ctx }) => {
-    return entryService.readAll();
-  }),
+  readAll: publicProcedure
+    .input(readAllEntrySchema)
+    .query(async ({ ctx, input }) => {
+      return entryService.readAll(input.limit ?? 50, input.offset ?? 0);
+    }),
   read: publicProcedure.input(readEntrySchema).query(async ({ ctx, input }) => {
     return entryService.read(input.id);
   }),
   update: publicProcedure
     .input(updateEntrySchema)
     .mutation(async ({ ctx, input }) => {
-      return entryService.update(input.id, input);
+      return entryService.update(input.id, {
+        note: input.note ?? null,
+        completedAt: input.completedAt ?? null,
+        title: input.title,
+      });
     }),
   delete: publicProcedure
     .input(deleteEntrySchema)

@@ -1,7 +1,5 @@
-import { db } from "@/server/database";
-import { entriesTable } from "@/server/database/schema/entires";
 import { Logger } from "@/utils/logger";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { createEntrySchema } from "../entry.input";
 import {
   type CreateEntry,
@@ -12,6 +10,8 @@ import {
   UpdateEntry,
   type UpdateResult,
 } from "./entry.repository.types";
+import { entry as entriesTable } from "@/database/schema";
+import { db } from "@/database";
 
 class EntryRepository {
   private readonly logger = new Logger(EntryRepository.name);
@@ -26,12 +26,12 @@ class EntryRepository {
 
     const result = await db
       .insert(entriesTable)
-      .values(schemaValidatedEntry)
+      .values({ ...schemaValidatedEntry, userId })
       .returning();
 
     return result[0];
   }
-  // TODO: Add auth
+
   public async readAll(
     userId: string,
     limit: number,
@@ -39,7 +39,8 @@ class EntryRepository {
   ): Promise<ReadAllResult> {
     this.logger.debug(`Reading all entries from the database.`);
 
-    const result = await db.query.entriesTable.findMany({
+    const result = await db.query.entry.findMany({
+      where: eq(entriesTable.userId, userId),
       orderBy: (entry, { desc }) => desc(entry.createdAt),
       limit,
       offset,
@@ -51,8 +52,8 @@ class EntryRepository {
   public async read(userId: string, id: string): Promise<ReadResult> {
     this.logger.debug(`Reading an entry from the database with id ${id}.`);
 
-    const result = await db.query.entriesTable.findFirst({
-      where: eq(entriesTable.id, id),
+    const result = await db.query.entry.findFirst({
+      where: and(eq(entriesTable.id, id), eq(entriesTable.userId, userId)),
     });
 
     return result;
@@ -68,7 +69,7 @@ class EntryRepository {
     const result = await db
       .update(entriesTable)
       .set(entry)
-      .where(eq(entriesTable.id, id));
+      .where(and(eq(entriesTable.id, id), eq(entriesTable.userId, userId)));
 
     return result.success;
   }
@@ -76,7 +77,9 @@ class EntryRepository {
   public async delete(userId: string, id: string): Promise<DeleteResult> {
     this.logger.debug(`Deleting an entry from the database with id ${id}.`);
 
-    const result = await db.delete(entriesTable).where(eq(entriesTable.id, id));
+    const result = await db
+      .delete(entriesTable)
+      .where(and(eq(entriesTable.id, id), eq(entriesTable.userId, userId)));
 
     return result.success;
   }
