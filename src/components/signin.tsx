@@ -109,7 +109,7 @@ export default function SignIn() {
             {loading ? <Loader2 size={17} className="animate-spin" /> : "Login"}
           </Button>
           <Link href="/signup" className="inline-block text-sm underline">
-            Already have an account?
+            Don&apos;t have an account?
           </Link>
           <div className="flex flex-row gap-2 items-center">
             <div className="flex-1 h-px bg-muted rounded-xl" />

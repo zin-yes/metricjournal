@@ -17,6 +17,7 @@ import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { Loader2, X } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
+import Link from "next/link";
 
 // TODO: Add zod validation
 export function SignUp() {
@@ -162,6 +163,9 @@ export function SignUp() {
             )}
           </Button>
 
+          <Link href="/signin" className="inline-block text-sm underline">
+            Already have an account?
+          </Link>
           <div className="flex flex-row gap-2 items-center">
             <div className="flex-1 h-px bg-muted rounded-xl" />
             <span className="text-sm text-muted-foreground">or</span>

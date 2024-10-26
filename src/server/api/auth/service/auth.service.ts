@@ -12,11 +12,6 @@ class AuthService {
     const session = await auth.api.getSession({
       headers: headers(),
     });
-    const userId = session?.user.id;
-
-    if (!userId) {
-      throw new Error("User not authenticated.");
-    }
 
     return session;
   }
