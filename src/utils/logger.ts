@@ -8,14 +8,29 @@ export class Logger {
     context: string,
     messages: unknown[]
   ): void {
-    if (
-      process.env.NODE_ENV !== "production" ||
-      type === "log" ||
-      type === "info" ||
-      type === "error"
-    ) {
-      const prefix = `[${new Date().toLocaleString()}] [${type.toUpperCase()} | ${context}] `;
-      console.log(prefix, ...messages);
+    // Implement centralized logging
+    const logData = {
+      timestamp: new Date().toISOString(),
+      level: type.toUpperCase(),
+      context,
+      messages
+    };
+
+    // In production, send logs to a centralized logging service
+    if (process.env.NODE_ENV === "production") {
+      // TODO: Replace with actual centralized logging service
+      // For example: sendToCentralizedLoggingService(logData);
+      console.log("Sending to centralized logging service:", JSON.stringify(logData));
+    } else {
+      // In development, log to console
+      const prefix = `[${logData.timestamp}] [${logData.level} | ${logData.context}] `;
+      console.log(prefix, ...logData.messages);
+    }
+
+    // Always log errors, regardless of environment
+    if (type === "error") {
+      const prefix = `[${logData.timestamp}] [${logData.level} | ${logData.context}] `;
+      console.error(prefix, ...messages);
     }
   }
 
