@@ -4,7 +4,7 @@ export type Entry = _Entry;
 
 export type CreateEntry = Omit<
   Entry,
-  "id" |"userId"| "completedAt" | "createdAt" | "updatedAt"
+  "id" | "userId" | "completedAt" | "createdAt" | "updatedAt"
 >;
 export type UpdateEntry = Omit<
   Entry,
@@ -13,6 +13,7 @@ export type UpdateEntry = Omit<
 
 export type CreateResult = Entry | undefined;
 export type ReadAllResult = Entry[];
+export type ReadAllFromDayResult = Entry[];
 export type ReadResult = Entry | undefined;
 export type UpdateResult = boolean;
 export type DeleteResult = boolean;

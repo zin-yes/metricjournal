@@ -4,6 +4,7 @@ import {
   type CreateEntry,
   type CreateResult,
   type DeleteResult,
+  ReadAllFromDayResult,
   type ReadAllResult,
   type ReadResult,
   UpdateEntry,
@@ -30,6 +31,18 @@ class EntryService {
     const user = await authService.getUser();
 
     return await entryRepository.readAll(user.id, limit, offset);
+  }
+
+  public async readAllFromDay(
+    date: Date,
+    limit: number,
+    offset: number
+  ): Promise<ReadAllFromDayResult> {
+    this.logger.debug(`Reading all entries from the database for a day.`);
+
+    const user = await authService.getUser();
+
+    return await entryRepository.readAllFromDay(user.id, date, limit, offset);
   }
 
   public async read(id: string): Promise<ReadResult> {

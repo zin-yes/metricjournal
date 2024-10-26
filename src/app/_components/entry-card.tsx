@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -164,11 +165,24 @@ export default function EntryCardWithEditModal({
   );
 }
 
+function getTags(text: string) {
+  return text.split(" ").filter((word) => word.startsWith("#"));
+}
+
+function getNotesLengthMinusTags(text: string) {
+  return text
+    .split(" ")
+    .filter((word) => !word.startsWith("#"))
+    .join(" ").length;
+}
+
 function contentToHtml(text: string) {
   return text.split("\n").map((item, index) => {
     return (
       <React.Fragment key={index}>
-        {item}
+        {item
+          .split(" ")
+          .map((word, wordIndex) => (word.startsWith("#") ? null : word + " "))}
         <br />
       </React.Fragment>
     );
@@ -182,6 +196,8 @@ export function EntryCard({
   handleOpen: () => void;
   entry: Entry;
 }) {
+  const tags = getTags(entry.note ?? "");
+
   return (
     <div className="flex flex-col items-center">
       <div className="px-3 rounded-t-[var(--radius)] border w-fit border-b-0 h-5 flex justify-center items-end">
@@ -190,11 +206,25 @@ export function EntryCard({
         </span>
       </div>
       <Card onClick={() => handleOpen()} className="w-full cursor-pointer">
-        <CardHeader>
+        <CardHeader className={tags.length > 0 ? "pb-0" : ""}>
           <CardTitle>{entry.title}</CardTitle>
         </CardHeader>
+
+        {tags.length > 0 ? (
+          <div className="flex flex-wrap gap-2 border-b border-t my-6 p-6 py-4">
+            {tags.map((tag) => (
+              <div
+                key={tag}
+                className="px-2.5 py-0.5 rounded-xl text-xs bg-muted"
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
+        ) : null}
+
         <CardContent>
-          {entry.note ? (
+          {getNotesLengthMinusTags(entry.note ?? "") > 0 ? (
             <ShowMore content={entry.note ?? ""} />
           ) : (
             <span className="text-muted-foreground">Click to edit...</span>

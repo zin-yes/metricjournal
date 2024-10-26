@@ -25,7 +25,13 @@ export const readEntrySchema = z.object({
 
 export const readAllEntrySchema = z.object({
   limit: z.number().min(1).max(250).optional(),
-  offset: z.number().min(0).optional(),
+  cursor: z.number().min(0).optional(),
+});
+
+export const readAllFromDayEntrySchema = z.object({
+  date: z.date(),
+  limit: z.number().min(1).max(250).optional(),
+  cursor: z.number().min(0).optional(),
 });
 
 export const updateEntrySchema = z.object({

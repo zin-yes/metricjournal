@@ -1,15 +1,20 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/database";
-import { getBaseUrl } from "./utils";
+import { getBaseUrl } from "@/lib/utils";
 
 export const auth = betterAuth({
   baseURL: getBaseUrl(),
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google", "discord"],
+    },
+  },
   secret: process.env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, {
     provider: "sqlite",
   }),
-
   emailAndPassword: {
     enabled: true,
   },

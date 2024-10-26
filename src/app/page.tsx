@@ -45,7 +45,7 @@ export default function IndexPage() {
   const entryReadAllQuery = api.entry.readAll.useQuery(
     {
       limit: 50,
-      offset: 0,
+      cursor: 0,
     },
     {
       refetchOnMount: true,
