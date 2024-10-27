@@ -206,12 +206,12 @@ export default function EntryCardWithEditModal({
 }
 
 function getTags(text: string) {
-  return text.split(" ").filter((word) => word.startsWith("#"));
+  return text.split(/(\s|\n)/).filter((word) => word.startsWith("#"));
 }
 
 function getNotesLengthMinusTags(text: string) {
   return text
-    .split(" ")
+    .split(/(\s|\n)/)
     .filter((word) => !word.startsWith("#"))
     .join(" ").length;
 }
@@ -221,12 +221,16 @@ function contentToHtml(text: string) {
     return (
       <React.Fragment key={index}>
         {item
-          .split(" ")
+          .split(/(\s|\n)/)
           .map((word, wordIndex) => (word.startsWith("#") ? null : word + " "))}
         <br />
       </React.Fragment>
     );
   });
+}
+
+function shortContentToHtml(text: string) {
+  return contentToHtml(text).slice(0, 5);
 }
 
 export function EntryCard({
@@ -292,9 +296,7 @@ function ShowMore({ content }: { content: string }) {
 
   return (
     <>
-      {showMore
-        ? contentToHtml(content)
-        : contentToHtml(content.substring(0, 128))}
+      {showMore ? contentToHtml(content) : shortContentToHtml(content)}
       {content.length > 128 && (
         <button
           onClick={(event) => {
