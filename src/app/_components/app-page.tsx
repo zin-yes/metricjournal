@@ -38,6 +38,8 @@ import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { createEntrySchema } from "@/server/api/entry/entry.input";
 import Link from "next/link";
+import { Connector } from "./connector";
+import moment from "moment";
 
 export default function AppPageComponent() {
   const { toast } = useToast();
@@ -283,12 +285,29 @@ function EntryList({
   entryDeleteMutation: ReturnType<typeof api.entry.delete.useMutation>;
   entryUpdateMutation: ReturnType<typeof api.entry.update.useMutation>;
 }) {
-  return entries.map((entry) => (
-    <EntryCardWithEditModal
-      entryUpdateMutation={entryUpdateMutation}
-      entryDeleteMutation={entryDeleteMutation}
-      key={entry.id}
-      entry={entry}
-    />
-  ));
+  // connector between each entry
+  return (
+    <div className="w-full flex flex-col gap-0">
+      {entries.map((entry, index) => (
+        <div key={entry.id}>
+          <EntryCardWithEditModal
+            entryUpdateMutation={entryUpdateMutation}
+            entryDeleteMutation={entryDeleteMutation}
+            key={entry.id}
+            entry={entry}
+          />
+          {index !== entries.length - 1 && (
+            <Connector
+              text={`${moment
+                .duration(
+                  entries[index].createdAt.getTime() -
+                    entries[index + 1].createdAt.getTime()
+                )
+                .humanize()} later...`}
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  );
 }

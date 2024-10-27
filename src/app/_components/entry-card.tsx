@@ -36,11 +36,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Trash2 } from "lucide-react";
+import { Clock, Trash2 } from "lucide-react";
 import React, { useId, useRef, useState } from "react";
 import { Entry } from "@/database/schema";
 import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
 import { updateEntrySchema } from "@/server/api/entry/entry.input";
+import { TimePickerInput } from "@/components/ui/time-picker-input";
+import { Label } from "@/components/ui/label";
 
 export default function EntryCardWithEditModal({
   entryDeleteMutation,
@@ -69,18 +71,24 @@ export default function EntryCardWithEditModal({
   });
 
   function onSubmit(values: z.infer<typeof updateEntrySchema>) {
-    entryUpdateMutation.mutateAsync({ ...values, id: entry.id }).then(() => {
-      setOpen(false);
-      form.reset();
-    });
+    entryUpdateMutation
+      .mutateAsync({
+        id: entry.id,
+        title: form.getValues().title,
+        note: form.getValues().note,
+        completedAt: form.getValues().completedAt,
+      })
+      .then(() => {
+        setOpen(false);
+        form.reset();
+      });
   }
 
   const titleInputRef = useRef<HTMLInputElement>(null);
-
+  const formRef = useRef<HTMLFormElement>(null);
   return (
     <>
       <EntryCard entry={entry} handleOpen={handleOpen} />
-
       <Credenza open={open} onOpenChange={setOpen}>
         <CredenzaContent>
           <CredenzaHeader>
@@ -89,7 +97,7 @@ export default function EntryCardWithEditModal({
               Edit the contents of the entry that you selected by clicking
             </CredenzaDescription>
           </CredenzaHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)}>
             <CredenzaBody>
               <Form {...form}>
                 <div className="flex flex-col gap-2">
@@ -141,11 +149,43 @@ export default function EntryCardWithEditModal({
                       </FormItem>
                     )}
                   />
+                  {/* <FormField
+                    control={form.control}
+                    name="completedAt"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Completed at</FormLabel>
+                        <FormControl>
+                          <TimePickerDemo
+                            date={field.value ?? new Date()}
+                            setDate={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  /> */}
                 </div>
               </Form>
             </CredenzaBody>
             <CredenzaFooter>
-              <Button type="submit">Submit</Button>
+              <Button
+                disabled={entryUpdateMutation.isPending}
+                onClick={() => {
+                  entryUpdateMutation
+                    .mutateAsync({
+                      id: entry.id,
+                      title: form.getValues().title,
+                      note: form.getValues().note,
+                      completedAt: null,
+                    })
+                    .then(() => {
+                      setOpen(false);
+                    });
+                }}
+              >
+                {entryUpdateMutation.isPending ? "Updating..." : "Submit"}
+              </Button>
               <EntryDeleteModal
                 entry={entry}
                 entryDeleteMutation={entryDeleteMutation}
@@ -200,7 +240,7 @@ export function EntryCard({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="px-3 rounded-t-[var(--radius)] border w-fit border-b-0 h-5 flex justify-center items-end">
+      <div className="px-3 rounded-t-[var(--radius)] border w-fit border-b-0 h-5 flex justify-center items-end ">
         <span className="text-xs text-muted-foreground">
           {moment(entry.createdAt).format("hh:mm a")}
         </span>
@@ -314,5 +354,61 @@ export function EntryDeleteModal({
         </CredenzaFooter>
       </CredenzaContent>
     </Credenza>
+  );
+}
+
+interface TimePickerDemoProps {
+  date: Date | undefined;
+  setDate: (date: Date | undefined) => void;
+}
+
+export function TimePickerDemo({ date, setDate }: TimePickerDemoProps) {
+  const minuteRef = React.useRef<HTMLInputElement>(null);
+  const hourRef = React.useRef<HTMLInputElement>(null);
+  const secondRef = React.useRef<HTMLInputElement>(null);
+
+  return (
+    <div className="flex items-end gap-2">
+      <div className="grid gap-1 text-center">
+        <Label htmlFor="hours" className="text-xs">
+          Hours
+        </Label>
+        <TimePickerInput
+          picker="hours"
+          date={date}
+          setDate={setDate}
+          ref={hourRef}
+          onRightFocus={() => minuteRef.current?.focus()}
+        />
+      </div>
+      <div className="grid gap-1 text-center">
+        <Label htmlFor="minutes" className="text-xs">
+          Minutes
+        </Label>
+        <TimePickerInput
+          picker="minutes"
+          date={date}
+          setDate={setDate}
+          ref={minuteRef}
+          onLeftFocus={() => hourRef.current?.focus()}
+          onRightFocus={() => secondRef.current?.focus()}
+        />
+      </div>
+      <div className="grid gap-1 text-center">
+        <Label htmlFor="seconds" className="text-xs">
+          Seconds
+        </Label>
+        <TimePickerInput
+          picker="seconds"
+          date={date}
+          setDate={setDate}
+          ref={secondRef}
+          onLeftFocus={() => minuteRef.current?.focus()}
+        />
+      </div>
+      <div className="flex h-10 items-center">
+        <Clock className="ml-2 h-4 w-4" />
+      </div>
+    </div>
   );
 }
