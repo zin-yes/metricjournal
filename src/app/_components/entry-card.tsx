@@ -209,10 +209,10 @@ const TAG_MAX_LENGTH = 64;
 function getTags(text: string) {
   return text
     .split(/(\s|\n)/)
-    .filter((word) => word.length - 1 < TAG_MAX_LENGTH && word.startsWith("#"));
+    .filter((word) => word.startsWith("#") && word.length - 1 < TAG_MAX_LENGTH);
 }
 
-// TODO: when there are no tags, add a line between the title and the note
+// FIXME: TODO: add tags in the back-end to data model to make searching more efficient in the future.
 export function EntryCard({
   handleOpen,
   entry,
@@ -220,7 +220,10 @@ export function EntryCard({
   handleOpen: () => void;
   entry: Entry;
 }) {
-  const tags = [...getTags(entry.note ?? ""), ...getTags(entry.title)];
+  const tags = [
+    ...getTags(entry.note ?? ""),
+    ...getTags(entry.title),
+  ].toSorted();
 
   return (
     <div className="flex flex-col items-center">
@@ -232,19 +235,17 @@ export function EntryCard({
       <Card onClick={() => handleOpen()} className="w-full cursor-pointer">
         <CardHeader className={tags.length > 0 ? "pb-0" : ""}>
           <CardTitle>
-            {entry.title
-              .split(/(\s|\n)/)
-              .map((word, index) => (
-                <React.Fragment key={"word-" + index}>
-                  {word.startsWith("#") ? (
-                    <span className="text-muted-foreground hover:underline">
-                      {word}
-                    </span>
-                  ) : (
-                    word + " "
-                  )}
-                </React.Fragment>
-              ))}
+            {entry.title.split(/(\s|\n)/).map((word, index) => (
+              <React.Fragment key={"word-" + index}>
+                {word.startsWith("#") && word.length - 1 < TAG_MAX_LENGTH ? (
+                  <span className="text-muted-foreground hover:underline">
+                    {word}
+                  </span>
+                ) : (
+                  word + " "
+                )}
+              </React.Fragment>
+            ))}
           </CardTitle>
         </CardHeader>
 
@@ -296,7 +297,7 @@ function ShowMore({ content }: { content: string }) {
             <React.Fragment key={index}>
               {item.split(/(\s|\n)/).map((word, index) => (
                 <React.Fragment key={"word-" + index}>
-                  {word.startsWith("#") ? (
+                  {word.startsWith("#") && word.length - 1 < TAG_MAX_LENGTH ? (
                     <span className="text-muted-foreground hover:underline">
                       {word}
                     </span>

@@ -34,13 +34,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Entry } from "@/database/schema";
 import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
 import { authClient } from "@/lib/auth-client";
-import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { createEntrySchema } from "@/server/api/entry/entry.input";
 import Link from "next/link";
 import { Connector } from "./connector";
 import moment from "moment";
 
+// TODO: Refactor page and split different parts into components of their own.
 export default function AppPageComponent() {
   const { toast } = useToast();
 
@@ -285,7 +285,6 @@ function EntryList({
   entryDeleteMutation: ReturnType<typeof api.entry.delete.useMutation>;
   entryUpdateMutation: ReturnType<typeof api.entry.update.useMutation>;
 }) {
-  // connector between each entry
   return (
     <div className="w-full flex flex-col gap-0">
       {entries.map((entry, index) => (
