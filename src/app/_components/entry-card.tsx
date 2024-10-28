@@ -209,30 +209,8 @@ function getTags(text: string) {
   return text.split(/(\s|\n)/).filter((word) => word.startsWith("#"));
 }
 
-function getNotesLengthMinusTags(text: string) {
-  return text
-    .split(/(\s|\n)/)
-    .filter((word) => !word.startsWith("#"))
-    .join(" ").length;
-}
-
-function contentToHtml(text: string) {
-  return text.split("\n").map((item, index) => {
-    return (
-      <React.Fragment key={index}>
-        {item
-          .split(/(\s|\n)/)
-          .map((word, wordIndex) => (word.startsWith("#") ? null : word + " "))}
-        <br />
-      </React.Fragment>
-    );
-  });
-}
-
-function shortContentToHtml(text: string) {
-  return contentToHtml(text).slice(0, 5);
-}
-
+// TODO: dont hide the tags
+// TODO: when there are no tags, add a line between the title and the note
 export function EntryCard({
   handleOpen,
   entry,
@@ -268,7 +246,7 @@ export function EntryCard({
         ) : null}
 
         <CardContent>
-          {getNotesLengthMinusTags(entry.note ?? "") > 0 ? (
+          {entry.note && entry.note.length > 0 ? (
             <ShowMore content={entry.note ?? ""} />
           ) : (
             <span className="text-muted-foreground">Click to edit...</span>
@@ -295,8 +273,27 @@ function ShowMore({ content }: { content: string }) {
   const [showMore, setShowMore] = useState(false);
 
   return (
-    <>
-      {showMore ? contentToHtml(content) : shortContentToHtml(content)}
+    <div>
+      <div className={showMore ? "" : "line-clamp-5"}>
+        {content.split("\n").map((item, index) => {
+          return (
+            <React.Fragment key={index}>
+              {item.split(/(\s|\n)/).map((word, index) => (
+                <React.Fragment key={"word-" + index}>
+                  {word.startsWith("#") ? (
+                    <span className="text-muted-foreground hover:underline">
+                      {word}
+                    </span>
+                  ) : (
+                    word + " "
+                  )}
+                </React.Fragment>
+              ))}
+              <br />
+            </React.Fragment>
+          );
+        })}
+      </div>
       {content.length > 128 && (
         <button
           onClick={(event) => {
@@ -308,7 +305,7 @@ function ShowMore({ content }: { content: string }) {
           {showMore ? "show less..." : "show more..."}
         </button>
       )}
-    </>
+    </div>
   );
 }
 
