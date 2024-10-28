@@ -204,9 +204,12 @@ export default function EntryCardWithEditModal({
     </>
   );
 }
+const TAG_MAX_LENGTH = 64;
 
 function getTags(text: string) {
-  return text.split(/(\s|\n)/).filter((word) => word.startsWith("#"));
+  return text
+    .split(/(\s|\n)/)
+    .filter((word) => word.length - 1 < TAG_MAX_LENGTH && word.startsWith("#"));
 }
 
 // TODO: when there are no tags, add a line between the title and the note
@@ -217,7 +220,7 @@ export function EntryCard({
   handleOpen: () => void;
   entry: Entry;
 }) {
-  const tags = getTags(entry.note ?? "");
+  const tags = [...getTags(entry.note ?? ""), ...getTags(entry.title)];
 
   return (
     <div className="flex flex-col items-center">
@@ -228,7 +231,21 @@ export function EntryCard({
       </div>
       <Card onClick={() => handleOpen()} className="w-full cursor-pointer">
         <CardHeader className={tags.length > 0 ? "pb-0" : ""}>
-          <CardTitle>{entry.title}</CardTitle>
+          <CardTitle>
+            {entry.title
+              .split(/(\s|\n)/)
+              .map((word, index) => (
+                <React.Fragment key={"word-" + index}>
+                  {word.startsWith("#") ? (
+                    <span className="text-muted-foreground hover:underline">
+                      {word}
+                    </span>
+                  ) : (
+                    word + " "
+                  )}
+                </React.Fragment>
+              ))}
+          </CardTitle>
         </CardHeader>
 
         {tags.length > 0 ? (
