@@ -209,7 +209,6 @@ function getTags(text: string) {
   return text.split(/(\s|\n)/).filter((word) => word.startsWith("#"));
 }
 
-// TODO: dont hide the tags
 // TODO: when there are no tags, add a line between the title and the note
 export function EntryCard({
   handleOpen,
@@ -245,7 +244,7 @@ export function EntryCard({
           </div>
         ) : null}
 
-        <CardContent>
+        <CardContent className={tags.length > 0 ? "" : "border-t pt-6"}>
           {entry.note && entry.note.length > 0 ? (
             <ShowMore content={entry.note ?? ""} />
           ) : (
