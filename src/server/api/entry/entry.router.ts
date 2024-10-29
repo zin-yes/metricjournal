@@ -1,4 +1,8 @@
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 import {
   createEntrySchema,
   deleteEntrySchema,
@@ -10,44 +14,46 @@ import {
 import { entryService } from "./service/entry.service";
 
 export const entryRouter = createTRPCRouter({
-  // TODO: Add auth
-  create: publicProcedure
+  create: protectedProcedure
     .input(createEntrySchema)
-    .mutation(async ({ input }) => {
-      return entryService.create({
+    .mutation(async ({ input, ctx }) => {
+      return entryService.create(ctx, {
         note: input.note ?? null,
         title: input.title,
       });
     }),
-  readAll: publicProcedure
+  readAll: protectedProcedure
     .input(readAllEntrySchema)
-    .query(async ({ input }) => {
-      return entryService.readAll(input.limit ?? 50, input.cursor ?? 0);
+    .query(async ({ input, ctx }) => {
+      return entryService.readAll(ctx, input.limit ?? 50, input.cursor ?? 0);
     }),
-  readAllFromDay: publicProcedure
+  readAllFromDay: protectedProcedure
     .input(readAllFromDayEntrySchema)
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return entryService.readAllFromDay(
+        ctx,
         input.date,
         input.limit ?? 50,
         input.cursor ?? 0
       );
     }),
-  read: publicProcedure.input(readEntrySchema).query(async ({ input }) => {
-    return entryService.read(input.id);
-  }),
-  update: publicProcedure
+  read: protectedProcedure
+    .input(readEntrySchema)
+    .query(async ({ input, ctx }) => {
+      return entryService.read(ctx, input.id);
+    }),
+  update: protectedProcedure
     .input(updateEntrySchema)
-    .mutation(async ({ input }) => {
-      return entryService.update(input.id, {
+    .mutation(async ({ input, ctx }) => {
+      return entryService.update(ctx, input.id, {
         note: input.note ?? null,
         completedAt: input.completedAt ?? null,
         title: input.title,
       });
     }),
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(deleteEntrySchema)
-    .mutation(async ({ input }) => {
-      return entryService.delete(input.id);
+    .mutation(async ({ input, ctx }) => {
+      return entryService.delete(ctx, input.id);
     }),
 });

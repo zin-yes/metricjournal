@@ -1,7 +1,15 @@
-import { drizzle } from "drizzle-orm/d1";
+import { createClient, type Client } from "@libsql/client";
+import { drizzle } from "drizzle-orm/libsql";
 
+import { env } from "@/env";
 import * as schema from "./schema";
 
-export const db = drizzle(process.env.DB, {
-  schema: { ...schema },
-});
+const globalForDb = globalThis as unknown as {
+  client: Client | undefined;
+};
+
+export const client =
+  globalForDb.client ?? createClient({ url: env.DATABASE_TURSO_URL, authToken: env.DATABASE_TURSO_AUTH_TOKEN });
+if (env.NODE_ENV !== "production") globalForDb.client = client;
+
+export const db = drizzle(client, { schema });

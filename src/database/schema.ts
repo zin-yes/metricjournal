@@ -60,6 +60,8 @@ export const verification = sqliteTable("verification", {
 });
 
 // APP SCHEMA
+
+// ENTRY SCHEMA
 export const entry = sqliteTable("entry", {
   id: text("id")
     .primaryKey()

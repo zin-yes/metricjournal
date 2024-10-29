@@ -9,7 +9,7 @@ export function getBaseUrl() {
   if (typeof window !== "undefined") return window.location.origin;
 
   return process.env.NODE_ENV === "production"
-    ? `https://metricjournal.com`
+    ? `https://${process.env.VERCEL_URL}`
     : `http://localhost:${process.env.PORT ?? 3000}`;
 }
 

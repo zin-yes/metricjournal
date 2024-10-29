@@ -1,5 +1,6 @@
 import SignIn from "@/components/signin";
 
+export const runtime = "edge";
 //TODO: Redo page
 export default function SignInPage() {
   return (

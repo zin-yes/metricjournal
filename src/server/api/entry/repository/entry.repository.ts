@@ -13,6 +13,7 @@ import {
 } from "./entry.repository.types";
 import { entry as entriesTable } from "@/database/schema";
 import { db } from "@/database";
+import { TRPCContext } from "../../trpc";
 
 class EntryRepository {
   private readonly logger = new Logger(EntryRepository.name);
@@ -102,9 +103,10 @@ class EntryRepository {
     const result = await db
       .update(entriesTable)
       .set(entry)
-      .where(and(eq(entriesTable.id, id), eq(entriesTable.userId, userId)));
+      .where(and(eq(entriesTable.id, id), eq(entriesTable.userId, userId)))
+      .returning();
 
-    return result.success;
+    return result[0];
   }
 
   public async delete(userId: string, id: string): Promise<DeleteResult> {
@@ -112,9 +114,10 @@ class EntryRepository {
 
     const result = await db
       .delete(entriesTable)
-      .where(and(eq(entriesTable.id, id), eq(entriesTable.userId, userId)));
+      .where(and(eq(entriesTable.id, id), eq(entriesTable.userId, userId)))
+      .returning();
 
-    return result.success;
+    return result[0];
   }
 }
 

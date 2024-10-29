@@ -1,5 +1,7 @@
 import { SignUp } from "@/components/signup";
 
+export const runtime = "edge";
+
 // TODO: Redo page
 export default function SignUpPage() {
   return (

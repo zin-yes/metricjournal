@@ -15,5 +15,5 @@ export type CreateResult = Entry | undefined;
 export type ReadAllResult = Entry[];
 export type ReadAllFromDayResult = Entry[];
 export type ReadResult = Entry | undefined;
-export type UpdateResult = boolean;
-export type DeleteResult = boolean;
+export type UpdateResult = Entry;
+export type DeleteResult = Entry;

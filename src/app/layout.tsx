@@ -7,6 +7,7 @@ const defaultFont = Montserrat({ subsets: ["latin"] });
 
 import type { Metadata } from "next";
 import Providers from "./providers";
+
 export const metadata: Metadata = {
   title: "MetricJournal",
   description: "Live intentionally by tracking and reviewing your day.",

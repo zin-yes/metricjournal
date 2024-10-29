@@ -1,28 +1,27 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { type NextRequest } from "next/server";
 
+import { env } from "@/env";
 import { appRouter } from "@/server/api/root";
 import { createTRPCContext } from "@/server/api/trpc";
 
-/**
- * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
- * handling a HTTP request (e.g. when you make requests from Client Components).
- */
-const createContext = async (req: NextRequest, resHeaders: Headers) => {
+const createContext = async (req: NextRequest) => {
   return createTRPCContext({
-    headers: resHeaders,
-    req,
+    headers: req.headers,
   });
 };
 
+export const runtime = "edge";
+
+// TODO: add custom logger
 const handler = (req: NextRequest) =>
   fetchRequestHandler({
     endpoint: "/api",
     req,
     router: appRouter,
-    createContext: ({ resHeaders }) => createContext(req, resHeaders),
+    createContext: () => createContext(req),
     onError:
-      process.env.NODE_ENV === "development"
+      env.NODE_ENV === "development"
         ? ({ path, error }) => {
             console.error(
               `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`
