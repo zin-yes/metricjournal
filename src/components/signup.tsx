@@ -43,62 +43,54 @@ export function SignUp() {
   const [error, setError] = useState<string | null>(null);
 
   return (
-    <Card className="z-50 rounded-md max-w-md">
-      <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Sign Up</CardTitle>
-        <CardDescription className="text-xs md:text-sm">
-          Enter your information to create an account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-4">
-          {error && <h2 className="text-red-500 text-sm">{error}</h2>}
-          <Label htmlFor="display-name">Display name</Label>
-          <Input
-            id="display-name"
-            placeholder="Enter your display name..."
-            required
-            onChange={(e) => {
-              setDisplayName(e.target.value);
-            }}
-            value={displayName}
-          />
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email..."
-              required
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-              value={email}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              autoComplete="new-password"
-              placeholder="Enter your password..."
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Confirm password</Label>
-            <Input
-              type="password"
-              id="password_confirmation"
-              value={passwordConfirmation}
-              onChange={(event) => setPasswordConfirmation(event.target.value)}
-              autoComplete="new-password"
-              placeholder="Re-enter your password..."
-            />
-          </div>
-          {/* <div className="grid gap-2">
+    <div className="grid gap-4">
+      {error && <h2 className="text-red-500 text-sm">{error}</h2>}
+      <Label htmlFor="display-name">Display name</Label>
+      <Input
+        id="display-name"
+        placeholder="Enter your display name..."
+        required
+        onChange={(e) => {
+          setDisplayName(e.target.value);
+        }}
+        value={displayName}
+      />
+      <div className="grid gap-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="Enter your email..."
+          required
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+          value={email}
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          autoComplete="new-password"
+          placeholder="Enter your password..."
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="password">Confirm password</Label>
+        <Input
+          type="password"
+          id="password_confirmation"
+          value={passwordConfirmation}
+          onChange={(event) => setPasswordConfirmation(event.target.value)}
+          autoComplete="new-password"
+          placeholder="Re-enter your password..."
+        />
+      </div>
+      {/* <div className="grid gap-2">
             <Label htmlFor="image">Profile Image (optional)</Label>
             <div className="flex items-end gap-4">
               {imagePreview && (
@@ -131,89 +123,87 @@ export function SignUp() {
               </div>
             </div>
           </div> */}
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={loading}
-            onClick={async () => {
-              await authClient.signUp.email({
-                email,
-                password,
-                name: displayName,
-                image: image ? await convertImageToBase64(image) : "",
-                callbackURL: "/",
-                fetchOptions: {
-                  onResponse: () => {
-                    setLoading(false);
-                  },
-                  onRequest: () => {
-                    setLoading(true);
-                  },
-                  onError: (ctx) => {
-                    setError(ctx.error.message);
-                  },
-                },
-              });
-            }}
-          >
-            {loading ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : (
-              "Create an account"
-            )}
-          </Button>
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={loading}
+        onClick={async () => {
+          await authClient.signUp.email({
+            email,
+            password,
+            name: displayName,
+            image: image ? await convertImageToBase64(image) : "",
+            callbackURL: "/",
+            fetchOptions: {
+              onResponse: () => {
+                setLoading(false);
+              },
+              onRequest: () => {
+                setLoading(true);
+              },
+              onError: (ctx) => {
+                setError(ctx.error.message);
+              },
+            },
+          });
+        }}
+      >
+        {loading ? (
+          <Loader2 size={16} className="animate-spin" />
+        ) : (
+          "Create an account"
+        )}
+      </Button>
 
-          <Link href="/signin" className="inline-block text-sm underline">
-            Already have an account?
-          </Link>
-          <div className="flex flex-row gap-2 items-center">
-            <div className="flex-1 h-px bg-muted rounded-xl" />
-            <span className="text-sm text-muted-foreground">or</span>
-            <div className="flex-1 h-px bg-muted rounded-xl" />
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              className="w-full gap-2"
-              onClick={async () => {
-                await authClient.signIn.social(
-                  {
-                    provider: "discord",
-                    callbackURL: "/",
-                  },
-                  {
-                    onError: (ctx) => {
-                      setError(ctx.error.message);
-                    },
-                  }
-                );
-              }}
-            >
-              <DiscordLogoIcon />
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full gap-2"
-              onClick={async () => {
-                await authClient.signIn.social(
-                  {
-                    provider: "google",
-                    callbackURL: "/",
-                  },
-                  {
-                    onError: (ctx) => {
-                      setError(ctx.error.message);
-                    },
-                  }
-                );
-              }}
-            >
-              <FaGoogle />
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+      <Link href="/signin" className="inline-block text-sm underline">
+        Already have an account?
+      </Link>
+      <div className="flex flex-row gap-2 items-center">
+        <div className="flex-1 h-px bg-muted rounded-xl" />
+        <span className="text-sm text-muted-foreground">or</span>
+        <div className="flex-1 h-px bg-muted rounded-xl" />
+      </div>
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          className="w-full gap-2"
+          onClick={async () => {
+            await authClient.signIn.social(
+              {
+                provider: "discord",
+                callbackURL: "/",
+              },
+              {
+                onError: (ctx) => {
+                  setError(ctx.error.message);
+                },
+              }
+            );
+          }}
+        >
+          <DiscordLogoIcon />
+        </Button>
+        <Button
+          variant="outline"
+          className="w-full gap-2"
+          onClick={async () => {
+            await authClient.signIn.social(
+              {
+                provider: "google",
+                callbackURL: "/",
+              },
+              {
+                onError: (ctx) => {
+                  setError(ctx.error.message);
+                },
+              }
+            );
+          }}
+        >
+          <FaGoogle />
+        </Button>
+      </div>
+    </div>
   );
 }
 

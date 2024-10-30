@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 const connectorVariants = cva(
-  "w-full flex flex-col justify-center items-center",
+  "w-full flex flex-col justify-center items-center m-0 p-0",
   {
     variants: {
       variant: {
@@ -35,15 +35,15 @@ function Connector({ text, className, variant, ...props }: ConnectorProps) {
           <Image
             src="/connector-top.svg"
             alt="connector graphic"
-            width={4 * 2.3}
-            height={17 * 2.3}
+            width={9.2}
+            height={39.1}
           />
           <span className="text-[#c3cac8] text-sm">{text}</span>
           <Image
             src="/connector-bottom.svg"
             alt="connector graphic"
-            width={4 * 2.3}
-            height={17 * 2.3}
+            width={9.2}
+            height={39.1}
           />
         </div>
       );
@@ -53,8 +53,8 @@ function Connector({ text, className, variant, ...props }: ConnectorProps) {
           <Image
             src="/connector.svg"
             alt="connector graphic"
-            width={4 * 2.3}
-            height={34 * 2.3}
+            width={9.2}
+            height={39.2}
           />
         </div>
       );
@@ -64,8 +64,8 @@ function Connector({ text, className, variant, ...props }: ConnectorProps) {
           <Image
             src="/connector-top.svg"
             alt="connector graphic"
-            width={4 * 2.3}
-            height={17 * 2.3}
+            width={9.2}
+            height={39.1}
           />
         </div>
       );
@@ -75,8 +75,8 @@ function Connector({ text, className, variant, ...props }: ConnectorProps) {
           <Image
             src="/connector-bottom.svg"
             alt="connector graphic"
-            width={4 * 2.3}
-            height={17 * 2.3}
+            width={9.2}
+            height={39.1}
           />
         </div>
       );
@@ -86,15 +86,15 @@ function Connector({ text, className, variant, ...props }: ConnectorProps) {
           <Image
             src="/connector-top.svg"
             alt="connector graphic"
-            width={4 * 2.3}
-            height={17 * 2.3}
+            width={9.2}
+            height={39.1}
           />
           <span className="text-[#ABB1B0] text-sm">{text}</span>
           <Image
             src="/connector-bottom.svg"
             alt="connector graphic"
-            width={4 * 2.3}
-            height={17 * 2.3}
+            width={9.2}
+            height={39.1}
           />
         </div>
       );

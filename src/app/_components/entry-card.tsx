@@ -43,6 +43,32 @@ import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
 import { updateEntrySchema } from "@/server/api/entry/entry.input";
 import { TimePickerInput } from "@/components/ui/time-picker-input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export function EntryCardSkeleton() {
+  return (
+    <Card className="w-full cursor-pointer">
+      <CardHeader className={"pb-0"}>
+        <CardTitle>
+          <Skeleton className="w-40 h-4" />
+        </CardTitle>
+      </CardHeader>
+
+      <div className="flex flex-wrap gap-2 border-b border-t my-6 p-6 py-4">
+        <Skeleton className="w-12 h-4 px-2.5 py-0.5 rounded-xl text-xs bg-muted" />
+        <Skeleton className="w-24 h-4 px-2.5 py-0.5 rounded-xl text-xs bg-muted" />
+        <Skeleton className="w-16 h-4 px-2.5 py-0.5 rounded-xl text-xs bg-muted" />
+      </div>
+
+      <CardContent className={""}>
+        <Skeleton className="w-full h-4" />
+      </CardContent>
+      <CardFooter>
+        <Skeleton className="w-40 h-4" />
+      </CardFooter>
+    </Card>
+  );
+}
 
 export default function EntryCardWithEditModal({
   entryDeleteMutation,

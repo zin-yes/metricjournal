@@ -28,7 +28,7 @@ import {
   CredenzaTitle,
 } from "@/components/ui/credenza";
 import { useRef, useState } from "react";
-import EntryCardWithEditModal from "./entry-card";
+import EntryCardWithEditModal, { EntryCardSkeleton } from "./entry-card";
 import ModeToggle from "./mode-toggle";
 import { useToast } from "@/hooks/use-toast";
 import { Entry } from "@/database/schema";
@@ -39,9 +39,12 @@ import { createEntrySchema } from "@/server/api/entry/entry.input";
 import Link from "next/link";
 import { Connector } from "./connector";
 import moment from "moment";
+import SignIn from "@/components/signin";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // TODO: Refactor page and split different parts into components of their own.
-export default function AppPageComponent() {
+export default function AppPageComponent({ signIn }: { signIn: boolean }) {
   const { toast } = useToast();
 
   const entryReadAllQuery = api.entry.readAll.useQuery(
@@ -53,8 +56,10 @@ export default function AppPageComponent() {
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       refetchOnReconnect: true,
+      enabled: !signIn,
     }
   );
+
   const entryCreateMutation = api.entry.create.useMutation({
     onSettled: () => {
       entryReadAllQuery.refetch();
@@ -110,59 +115,89 @@ export default function AppPageComponent() {
 
   const { data } = authClient.useSession();
 
-  return (
-    <main className="w-full p-4 md:p-6 min-h-[100vh] flex flex-col items-center">
-      <div className="w-full flex flex-col gap-2 max-w-[700px]">
-        <header>
-          <div className="flex flex-row justify-between items-center">
-            <h1 className="text-xl font-bold">MetricJournal</h1>
-            {data?.user ? (
-              <div className="flex flex-row gap-2 items-center">
-                <Button asChild variant="outline">
-                  <Link href="/signout">Sign Out</Link>
-                </Button>
-                <Avatar>
-                  <AvatarImage src={data?.user.image} />
-                  <AvatarFallback>{data?.user.name?.[0]}</AvatarFallback>
-                </Avatar>
-              </div>
-            ) : (
-              <div className="flex flex-row gap-2">
-                <Button asChild variant="outline">
-                  <Link href="/signin">Sign In</Link>
-                </Button>
+  const [open, setOpen] = useState(signIn);
 
-                <Button asChild variant="outline">
-                  <Link href="/signup">Sign Up</Link>
-                </Button>
-              </div>
-            )}
+  return (
+    <>
+      <Credenza open={open} onOpenChange={setOpen}>
+        <CredenzaContent className="pb-3 max-w-sm">
+          <CredenzaHeader>
+            <CredenzaTitle className="text-lg md:text-xl">
+              Sign In
+            </CredenzaTitle>
+            <CredenzaDescription className="text-xs md:text-sm">
+              Enter your email below to login to your account
+            </CredenzaDescription>
+          </CredenzaHeader>
+          <CredenzaBody>
+            <SignIn />
+          </CredenzaBody>
+        </CredenzaContent>
+      </Credenza>
+
+      <main className="w-full p-4 md:p-6 min-h-[100vh] flex flex-col items-center">
+        <div className="w-full flex flex-col gap-2 max-w-[700px]">
+          <header>
+            <div className="flex flex-row justify-between items-center">
+              <h1 className="text-xl font-bold">MetricJournal</h1>
+              {!signIn || data?.user ? (
+                <div className="flex flex-row gap-2 items-center">
+                  <Button asChild variant="outline">
+                    <Link href="/signout">Sign Out</Link>
+                  </Button>
+                  <Avatar>
+                    <AvatarImage src={data?.user.image} />
+                    <AvatarFallback>{data?.user.name?.[0]}</AvatarFallback>
+                  </Avatar>
+                </div>
+              ) : (
+                <div className="flex flex-row gap-2">
+                  <Button asChild variant="outline">
+                    <Link href="/signin">Sign In</Link>
+                  </Button>
+
+                  <Button asChild variant="outline">
+                    <Link href="/signup">Sign Up</Link>
+                  </Button>
+                </div>
+              )}
+            </div>
+            {data?.user.name && <span>Hello, {data?.user.name}</span>}
+            <p>Live intentionally by tracking and reviewing your day.</p>
+          </header>
+          <div className="w-full flex flex-row gap-2">
+            <ModeToggle />
+            <AddEntryModalButton entryCreateMutation={entryCreateMutation} />
           </div>
-          {data?.user.name && <span>Hello, {data?.user.name}</span>}
-          <p>Live intentionally by tracking and reviewing your day.</p>
-        </header>
-        <div className="w-full flex flex-row gap-2">
-          <ModeToggle />
-          <AddEntryModalButton entryCreateMutation={entryCreateMutation} />
-        </div>
-        <span className="text-muted-foreground">
-          {entryReadAllQuery.isRefetching && "Refetching..."}
-        </span>
-        {entryReadAllQuery.isSuccess ? (
-          <EntryList
-            entries={entryReadAllQuery.data}
-            entryDeleteMutation={entryDeleteMutation}
-            entryUpdateMutation={entryUpdateMutation}
-          />
-        ) : entryReadAllQuery.isError ? (
-          <span className="text-red-500">
-            Error: {entryReadAllQuery.error.message}
+          <span className="text-muted-foreground">
+            {entryReadAllQuery.isRefetching && "Refetching..."}
           </span>
-        ) : (
-          <span className="text-muted-foreground">Loading...</span>
-        )}
-      </div>
-    </main>
+          {entryReadAllQuery.isSuccess ? (
+            <EntryList
+              entries={entryReadAllQuery.data}
+              entryDeleteMutation={entryDeleteMutation}
+              entryUpdateMutation={entryUpdateMutation}
+            />
+          ) : entryReadAllQuery.isError ? (
+            <span className="text-red-500">
+              Error: {entryReadAllQuery.error.message}
+            </span>
+          ) : signIn ? null : (
+            <>
+              <span className="text-muted-foreground">Loading...</span>
+
+              <div className="w-full flex flex-col gap-0">
+                <EntryCardSkeleton />
+                <Connector variant="no_text" />
+                <EntryCardSkeleton />
+                <Connector variant="no_text" />
+                <EntryCardSkeleton />
+              </div>
+            </>
+          )}
+        </div>
+      </main>
+    </>
   );
 }
 
