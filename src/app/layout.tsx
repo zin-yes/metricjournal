@@ -1,7 +1,5 @@
 import "./globals.css";
 
-export const runtime = "edge";
-
 import { Montserrat } from "next/font/google";
 const defaultFont = Montserrat({ subsets: ["latin"] });
 
