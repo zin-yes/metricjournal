@@ -6,7 +6,7 @@ import { db } from "@/database";
 import { authService } from "./auth/service/auth.service";
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const session = await authService.getSession(opts.headers);
+  const session = await authService.getSession();
 
   return {
     db,
