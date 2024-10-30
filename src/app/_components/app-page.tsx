@@ -40,8 +40,6 @@ import Link from "next/link";
 import { Connector } from "./connector";
 import moment from "moment";
 import SignIn from "@/components/signin";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 
 // TODO: Refactor page and split different parts into components of their own.
 export default function AppPageComponent({ signIn }: { signIn: boolean }) {
