@@ -160,7 +160,7 @@ export default function AppPageComponent({ signIn }: { signIn: boolean }) {
                 </div>
               )}
             </div>
-            {data?.user.name && <span>Hello, {data?.user.name}</span>}
+            {/* {data?.user.name && <span>Hello, {data?.user.name}</span>} */}
             <p>Live intentionally by tracking and reviewing your day.</p>
           </header>
           <div className="w-full flex flex-row gap-2">
