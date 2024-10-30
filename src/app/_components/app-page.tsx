@@ -118,7 +118,7 @@ export default function AppPageComponent({ signIn }: { signIn: boolean }) {
   return (
     <>
       <Credenza open={open} onOpenChange={setOpen}>
-        <CredenzaContent className="pb-3 max-w-sm">
+        <CredenzaContent className="pb-3 md:max-w-sm">
           <CredenzaHeader>
             <CredenzaTitle className="text-lg md:text-xl">
               Sign In
