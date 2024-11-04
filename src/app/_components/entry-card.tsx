@@ -40,7 +40,7 @@ import { Clock, Trash2 } from "lucide-react";
 import React, { useId, useMemo, useRef, useState } from "react";
 import { Entry } from "@/database/schema";
 import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
-import { updateEntrySchema } from "@/server/api/entry/entry.input";
+import { updateEntrySchema } from "@/services/timeline/modules/entry.input";
 import { TimePickerInput } from "@/components/ui/time-picker-input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -253,6 +253,7 @@ function getAllTags(text: string) {
 }
 
 // FIXME: TODO: add tags in the back-end to data model to make searching more efficient in the future.
+// FEATURE: Add a preference from the user to always show more, or to ask.
 export function EntryCard({
   handleOpen,
   entry,

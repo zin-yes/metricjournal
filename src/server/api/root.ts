@@ -1,8 +1,10 @@
 import { createTRPCRouter } from "@/server/api/trpc";
-import { entryRouter } from "./entry/entry.router";
+import { projectRouter } from "@/services/project/project.router";
+import { timelineRouter } from "@/services/timeline/timeline.router";
 
 export const appRouter = createTRPCRouter({
-  entry: entryRouter,
+  timeline: timelineRouter,
+  project: projectRouter,
 });
 
 export type AppRouter = typeof appRouter;

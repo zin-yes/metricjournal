@@ -1,4 +1,4 @@
-import { SignUp } from "@/components/signup";
+import SignIn from "@/app/(auth)/signin/signin";
 
 import {
   Card,
@@ -8,18 +8,19 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 
-export default function SignUpPage() {
+// TODO: Redo auth pages
+export default function SignInPage() {
   return (
     <main className="w-full h-[100vh] flex items-center justify-center">
-      <Card className="z-50 rounded-md max-w-md">
+      <Card className="z-50 rounded-md max-w-2xl">
         <CardHeader>
-          <CardTitle className="text-lg md:text-xl">Sign Up</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
           <CardDescription className="text-xs md:text-sm">
-            Enter your information to create an account
+            Enter your email below to login to your account
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <SignUp />
+          <SignIn />
         </CardContent>
       </Card>
     </main>

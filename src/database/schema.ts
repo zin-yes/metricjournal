@@ -61,8 +61,8 @@ export const verification = sqliteTable("verification", {
 
 // APP SCHEMA
 
-// ENTRY SCHEMA
-export const entry = sqliteTable("entry", {
+// JOURNAL FEATURE
+export const timelineEntry = sqliteTable("journal_entry", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => generateUUID()),
@@ -81,4 +81,46 @@ export const entry = sqliteTable("entry", {
     .$onUpdateFn(() => new Date()),
 });
 
-export type Entry = typeof entry.$inferSelect;
+export type TimelineEntry = typeof timelineEntry.$inferSelect;
+export type TimelineEntryInsert = typeof timelineEntry.$inferInsert;
+
+// PROJECTS FEATURE
+
+export const project = sqliteTable("project", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => generateUUID()),
+  userId: text("user_id")
+    .references(() => user.id, { onDelete: "cascade" })
+    .notNull(),
+  name: text("name", { length: 256 }).notNull(),
+});
+
+export type Project = typeof project.$inferSelect;
+export type ProjectInsert = typeof project.$inferInsert;
+
+export const projectEntry = sqliteTable("project_entry", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => generateUUID()),
+  userId: text("user_id")
+    .references(() => user.id, { onDelete: "cascade" })
+    .notNull(),
+  projectId: text("project_id")
+    .references(() => project.id, { onDelete: "cascade" })
+    .notNull(),
+  tags: text("tags").$type<string[]>().default([]),
+  title: text("title", { length: 256 }).notNull(),
+  note: text("note", { length: 4096 }),
+  completedAt: integer("completed_at", { mode: "timestamp_ms" }),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date())
+    .$onUpdateFn(() => new Date()),
+});
+
+export type ProjectEntry = typeof projectEntry.$inferSelect;
+export type ProjectEntryInsert = typeof projectEntry.$inferInsert;

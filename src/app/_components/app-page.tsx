@@ -31,19 +31,20 @@ import { useRef, useState } from "react";
 import EntryCardWithEditModal, { EntryCardSkeleton } from "./entry-card";
 import ModeToggle from "./mode-toggle";
 import { useToast } from "@/hooks/use-toast";
-import { Entry } from "@/database/schema";
 import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
 import { authClient } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { createEntrySchema } from "@/server/api/entry/entry.input";
+import { createEntrySchema } from "@/services/timeline/modules/entry.input";
 import Link from "next/link";
 import { Connector } from "./connector";
 import moment from "moment";
-import SignIn from "@/components/signin";
+import SignIn from "@/app/(auth)/signin/signin";
 import NavigationBar from "./navigation-bar";
 import { UserResult } from "@/server/api/auth/service/auth.service.types";
+import { TimelineEntry } from "@/database/schema";
 
 // TODO: Refactor page and split different parts into components of their own.
+// TODO: Start/set the created at time to when the add entry modal is opened. Then also record how long it takes from when the user starts writing to when they stop.
 export default function AppPageComponent({
   user,
 }: {
@@ -51,7 +52,7 @@ export default function AppPageComponent({
 }) {
   const { toast } = useToast();
 
-  const entryReadAllQuery = api.entry.readAll.useQuery(
+  const entryReadAllQuery = api.timeline.entry.readAll.useQuery(
     {
       limit: 50,
       cursor: 0,
@@ -64,7 +65,7 @@ export default function AppPageComponent({
     }
   );
 
-  const entryCreateMutation = api.entry.create.useMutation({
+  const entryCreateMutation = api.timeline.entry.create.useMutation({
     onSettled: () => {
       entryReadAllQuery.refetch();
     },
@@ -82,7 +83,7 @@ export default function AppPageComponent({
     },
   });
 
-  const entryUpdateMutation = api.entry.update.useMutation({
+  const entryUpdateMutation = api.timeline.entry.update.useMutation({
     onSettled: () => {
       entryReadAllQuery.refetch();
     },
@@ -99,7 +100,7 @@ export default function AppPageComponent({
       });
     },
   });
-  const entryDeleteMutation = api.entry.delete.useMutation({
+  const entryDeleteMutation = api.timeline.entry.delete.useMutation({
     onSettled: () => {
       entryReadAllQuery.refetch();
     },
@@ -201,7 +202,7 @@ export default function AppPageComponent({
 function AddEntryModalButton({
   entryCreateMutation,
 }: {
-  entryCreateMutation: ReturnType<typeof api.entry.create.useMutation>;
+  entryCreateMutation: ReturnType<typeof api.timeline.entry.create.useMutation>;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -308,14 +309,15 @@ function AddEntryModalButton({
   );
 }
 
+// TODO: Split and sort the entires by days and have the day of the week as the header.
 function EntryList({
   entries,
   entryDeleteMutation,
   entryUpdateMutation,
 }: {
-  entries: Entry[];
-  entryDeleteMutation: ReturnType<typeof api.entry.delete.useMutation>;
-  entryUpdateMutation: ReturnType<typeof api.entry.update.useMutation>;
+  entries: TimelineEntry[];
+  entryDeleteMutation: ReturnType<typeof api.timeline.entry.delete.useMutation>;
+  entryUpdateMutation: ReturnType<typeof api.timeline.entry.update.useMutation>;
 }) {
   return (
     <div className="w-full flex flex-col gap-0">

@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-export const createEntrySchema = z.object({
+const createProjectEntrySchema = z.object({
+  projectId: z.string().min(1, {
+    message: "A project identifier must be provided to create an entry.",
+  }),
   title: z
     .string()
     .max(256, {
@@ -17,27 +20,28 @@ export const createEntrySchema = z.object({
     .optional(),
 });
 
-export const readEntrySchema = z.object({
+const readAllProjectEntrySchema = z.object({
+  limit: z.number().min(1).max(250).optional(),
+  cursor: z.number().min(0).optional(),
+});
+
+const readProjectEntrySchema = z.object({
   id: z.string().min(1, {
     message: "An identifier must be provided to read an entry.",
   }),
+  projectId: z.string().min(1, {
+    message: "A project identifier must be provided to read an entry.",
+  }),
 });
 
-export const readAllEntrySchema = z.object({
-  limit: z.number().min(1).max(250).optional(),
-  cursor: z.number().min(0).optional(),
-});
-
-export const readAllFromDayEntrySchema = z.object({
-  date: z.date(),
-  limit: z.number().min(1).max(250).optional(),
-  cursor: z.number().min(0).optional(),
-});
-
-export const updateEntrySchema = z.object({
+const updateProjectEntrySchema = z.object({
   id: z.string().min(1, {
     message: "An identifier must be provided to update an entry.",
   }),
+  projectId: z.string().min(1, {
+    message: "A project identifier must be provided to update an entry.",
+  }),
+  completedAt: z.date().nullable(),
   title: z
     .string()
     .max(256, {
@@ -52,11 +56,21 @@ export const updateEntrySchema = z.object({
       message: "A note must be no longer than 4096 characters.",
     })
     .optional(),
-  completedAt: z.date().nullable(),
 });
 
-export const deleteEntrySchema = z.object({
+const deleteProjectEntrySchema = z.object({
   id: z.string().min(1, {
     message: "An identifier must be provided to delete an entry.",
   }),
+  projectId: z.string().min(1, {
+    message: "A project identifier must be provided to delete an entry.",
+  }),
 });
+
+export {
+  createProjectEntrySchema,
+  readAllProjectEntrySchema,
+  readProjectEntrySchema,
+  updateProjectEntrySchema,
+  deleteProjectEntrySchema,
+};

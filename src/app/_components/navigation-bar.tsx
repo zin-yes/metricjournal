@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 
+// TODO: Add a dropdown menu for user settings (i.e. signout, change name et cetera)
 export default function NavigationBar({ user }: { user: any }) {
   return (
     <header className="sticky w-full top-0 left-0 right-0 z-50 h-fit py-3 px-4 bg-background/80 border-b backdrop-blur-lg md:hidden">
