@@ -40,9 +40,16 @@ import Link from "next/link";
 import { Connector } from "./connector";
 import moment from "moment";
 import SignIn from "@/components/signin";
+import NavigationBar from "./navigation-bar";
 
 // TODO: Refactor page and split different parts into components of their own.
-export default function AppPageComponent({ signIn }: { signIn: boolean }) {
+export default function AppPageComponent({
+  signIn,
+  user,
+}: {
+  signIn: boolean;
+  user: any;
+}) {
   const { toast } = useToast();
 
   const entryReadAllQuery = api.entry.readAll.useQuery(
@@ -111,8 +118,6 @@ export default function AppPageComponent({ signIn }: { signIn: boolean }) {
     },
   });
 
-  const { data } = authClient.useSession();
-
   const [open, setOpen] = useState(signIn);
 
   return (
@@ -133,35 +138,30 @@ export default function AppPageComponent({ signIn }: { signIn: boolean }) {
         </CredenzaContent>
       </Credenza>
 
-      <main className="w-full p-4 md:p-6 min-h-[100vh] flex flex-col items-center">
-        <div className="w-full flex flex-col gap-2 max-w-[700px]">
-          <header>
-            <div className="flex flex-row justify-between items-center">
-              <h1 className="text-xl font-bold">MetricJournal</h1>
-              {!signIn || data?.user ? (
-                <div className="flex flex-row gap-2 items-center">
-                  <Button asChild variant="outline">
-                    <Link href="/signout">Sign Out</Link>
-                  </Button>
-                  <Avatar>
-                    <AvatarImage src={data?.user.image} />
-                    <AvatarFallback>{data?.user.name?.[0]}</AvatarFallback>
-                  </Avatar>
-                </div>
-              ) : (
-                <div className="flex flex-row gap-2">
-                  <Button asChild variant="outline">
-                    <Link href="/signin">Sign In</Link>
-                  </Button>
+      <NavigationBar signIn={signIn} user={user} />
 
-                  <Button asChild variant="outline">
-                    <Link href="/signup">Sign Up</Link>
-                  </Button>
-                </div>
-              )}
-            </div>
-            {/* {data?.user.name && <span>Hello, {data?.user.name}</span>} */}
-            <p>Live intentionally by tracking and reviewing your day.</p>
+      <main className="w-full p-4 py-6 md:p-6 min-h-[100vh] flex flex-col items-center">
+        <div className="w-full flex flex-col gap-2 max-w-[700px]">
+          <header className="flex-row justify-between items-center hidden md:flex w-full py-2">
+            <h1 className="text-xl font-bold">MetricJournal</h1>
+            {!signIn || user ? (
+              <div className="flex flex-row gap-2 items-center">
+                <Avatar>
+                  <AvatarImage src={user.image} />
+                  <AvatarFallback>{user.name?.[0]}</AvatarFallback>
+                </Avatar>
+              </div>
+            ) : (
+              <div className="flex flex-row gap-2">
+                <Button asChild variant="outline">
+                  <Link href="/signin">Sign In</Link>
+                </Button>
+
+                <Button asChild variant="outline">
+                  <Link href="/signup">Sign Up</Link>
+                </Button>
+              </div>
+            )}
           </header>
           <div className="w-full flex flex-row gap-2">
             <ModeToggle />

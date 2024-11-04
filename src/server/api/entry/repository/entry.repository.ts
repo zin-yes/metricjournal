@@ -13,7 +13,6 @@ import {
 } from "./entry.repository.types";
 import { entry as entriesTable } from "@/database/schema";
 import { db } from "@/database";
-import { TRPCContext } from "../../trpc";
 
 class EntryRepository {
   private readonly logger = new Logger(EntryRepository.name);

@@ -11,7 +11,6 @@ const createContext = async (req: NextRequest) => {
   });
 };
 
-export const runtime = "edge";
 
 // TODO: add custom logger
 const handler = (req: NextRequest) =>
