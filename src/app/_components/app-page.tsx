@@ -60,7 +60,7 @@ export default function AppPageComponent({
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       refetchOnReconnect: true,
-      enabled: !signIn,
+      enabled: user !== undefined,
     }
   );
 
@@ -117,7 +117,7 @@ export default function AppPageComponent({
     },
   });
 
-  const [open, setOpen] = useState(signIn);
+  const [open, setOpen] = useState(user !== undefined);
 
   return (
     <>
@@ -137,13 +137,13 @@ export default function AppPageComponent({
         </CredenzaContent>
       </Credenza>
 
-      <NavigationBar signIn={signIn} user={user} />
+      <NavigationBar user={user} />
 
       <main className="w-full p-4 py-6 md:p-6 min-h-[100vh] flex flex-col items-center">
         <div className="w-full flex flex-col gap-2 max-w-[700px]">
           <header className="flex-row justify-between items-center hidden md:flex w-full py-2">
             <h1 className="text-xl font-bold">MetricJournal</h1>
-            {!signIn || user ? (
+            {user !== undefined ? (
               <div className="flex flex-row gap-2 items-center">
                 <Avatar>
                   <AvatarImage src={user.image} />
@@ -179,7 +179,7 @@ export default function AppPageComponent({
             <span className="text-red-500">
               Error: {entryReadAllQuery.error.message}
             </span>
-          ) : signIn ? null : (
+          ) : user === undefined ? null : (
             <>
               <span className="text-muted-foreground">Loading...</span>
 
