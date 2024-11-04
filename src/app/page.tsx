@@ -3,8 +3,7 @@ import { authService } from "@/server/api/auth/service/auth.service";
 import AppPageComponent from "./_components/app-page";
 
 export default async function AppPage() {
-  const isAuthenticated = await authService.isAuthenticated();
-  const user = await authService.getUser();
+  const session = await authService.getSession();
 
-  return <AppPageComponent user={user} signIn={!isAuthenticated} />;
+  return <AppPageComponent user={session?.user} />;
 }

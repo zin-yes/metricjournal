@@ -41,14 +41,13 @@ import { Connector } from "./connector";
 import moment from "moment";
 import SignIn from "@/components/signin";
 import NavigationBar from "./navigation-bar";
+import { UserResult } from "@/server/api/auth/service/auth.service.types";
 
 // TODO: Refactor page and split different parts into components of their own.
 export default function AppPageComponent({
-  signIn,
   user,
 }: {
-  signIn: boolean;
-  user: any;
+  user: UserResult | undefined;
 }) {
   const { toast } = useToast();
 
