@@ -62,7 +62,7 @@ export const verification = sqliteTable("verification", {
 // APP SCHEMA
 
 // JOURNAL FEATURE
-export const timelineEntry = sqliteTable("journal_entry", {
+export const timelineEntry = sqliteTable("timeline_entry", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => generateUUID()),

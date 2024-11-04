@@ -1,6 +1,6 @@
 import { Logger } from "@/utils/logger";
 import { and, eq, gte, lte } from "drizzle-orm";
-import { createEntrySchema } from "./entry.input";
+import { createTimelineEntrySchema } from "./entry.input";
 
 import {
   type TimelineEntry,
@@ -33,7 +33,7 @@ class EntryRepository {
   ): Promise<CreateResult> {
     this.logger.debug("Creating a new entry in the database.");
 
-    const schemaValidatedEntry = createEntrySchema.parse(entry);
+    const schemaValidatedEntry = createTimelineEntrySchema.parse(entry);
 
     const result = await db
       .insert(timelineEntryTable)

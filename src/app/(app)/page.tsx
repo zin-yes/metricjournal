@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
 import {
   Credenza,
@@ -28,28 +27,23 @@ import {
   CredenzaTitle,
 } from "@/components/ui/credenza";
 import { useRef, useState } from "react";
-import EntryCardWithEditModal, { EntryCardSkeleton } from "./entry-card";
-import ModeToggle from "./mode-toggle";
 import { useToast } from "@/hooks/use-toast";
 import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
-import { authClient } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { createEntrySchema } from "@/services/timeline/modules/entry.input";
+import { createTimelineEntrySchema } from "@/services/timeline/modules/entry.input";
 import Link from "next/link";
-import { Connector } from "./connector";
 import moment from "moment";
-import SignIn from "@/app/(auth)/signin/signin";
-import NavigationBar from "./navigation-bar";
 import { UserResult } from "@/server/api/auth/service/auth.service.types";
 import { TimelineEntry } from "@/database/schema";
+import ModeToggle from "./_components/mode-toggle";
+import TimelineEntryCardWithEditModal, {
+  TimelineEntryCardSkeleton,
+} from "./_components/entry-card";
+import { Connector } from "./_components/connector";
 
 // TODO: Refactor page and split different parts into components of their own.
 // TODO: Start/set the created at time to when the add entry modal is opened. Then also record how long it takes from when the user starts writing to when they stop.
-export default function AppPageComponent({
-  user,
-}: {
-  user: UserResult | undefined;
-}) {
+export default function AppPageComponent() {
   const { toast } = useToast();
 
   const entryReadAllQuery = api.timeline.entry.readAll.useQuery(
@@ -61,7 +55,6 @@ export default function AppPageComponent({
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       refetchOnReconnect: true,
-      enabled: user !== undefined,
     }
   );
 
@@ -118,84 +111,41 @@ export default function AppPageComponent({
     },
   });
 
-  const [open, setOpen] = useState(user === undefined);
-
   return (
-    <>
-      <Credenza open={open} onOpenChange={setOpen}>
-        <CredenzaContent className="pb-3 md:max-w-sm">
-          <CredenzaHeader>
-            <CredenzaTitle className="text-lg md:text-xl">
-              Sign In
-            </CredenzaTitle>
-            <CredenzaDescription className="text-xs md:text-sm">
-              Enter your email below to login to your account
-            </CredenzaDescription>
-          </CredenzaHeader>
-          <CredenzaBody>
-            <SignIn />
-          </CredenzaBody>
-        </CredenzaContent>
-      </Credenza>
-
-      <NavigationBar user={user} />
-
-      <main className="w-full p-4 py-6 md:p-6 min-h-[100vh] flex flex-col items-center">
-        <div className="w-full flex flex-col gap-2 max-w-[700px]">
-          <header className="flex-row justify-between items-center hidden md:flex w-full py-2">
-            <h1 className="text-xl font-bold">MetricJournal</h1>
-            {user !== undefined ? (
-              <div className="flex flex-row gap-2 items-center">
-                <Avatar>
-                  <AvatarImage src={user.image} />
-                  <AvatarFallback>{user.name?.[0]}</AvatarFallback>
-                </Avatar>
-              </div>
-            ) : (
-              <div className="flex flex-row gap-2">
-                <Button asChild variant="outline">
-                  <Link href="/signin">Sign In</Link>
-                </Button>
-
-                <Button asChild variant="outline">
-                  <Link href="/signup">Sign Up</Link>
-                </Button>
-              </div>
-            )}
-          </header>
-          <div className="w-full flex flex-row gap-2">
-            <ModeToggle />
-            <AddEntryModalButton entryCreateMutation={entryCreateMutation} />
-          </div>
-          <span className="text-muted-foreground">
-            {entryReadAllQuery.isRefetching && "Refetching..."}
-          </span>
-          {entryReadAllQuery.isSuccess ? (
-            <EntryList
-              entries={entryReadAllQuery.data}
-              entryDeleteMutation={entryDeleteMutation}
-              entryUpdateMutation={entryUpdateMutation}
-            />
-          ) : entryReadAllQuery.isError ? (
-            <span className="text-red-500">
-              Error: {entryReadAllQuery.error.message}
-            </span>
-          ) : user === undefined ? null : (
-            <>
-              <span className="text-muted-foreground">Loading...</span>
-
-              <div className="w-full flex flex-col gap-0">
-                <EntryCardSkeleton />
-                <Connector variant="no_text" />
-                <EntryCardSkeleton />
-                <Connector variant="no_text" />
-                <EntryCardSkeleton />
-              </div>
-            </>
-          )}
+    <div className="w-full flex flex-col items-center">
+      <div className="w-full flex flex-col gap-2 max-w-[700px]">
+        <div className="w-full flex flex-row gap-2">
+          <ModeToggle />
+          <AddEntryModalButton entryCreateMutation={entryCreateMutation} />
         </div>
-      </main>
-    </>
+        <span className="text-muted-foreground">
+          {entryReadAllQuery.isRefetching && "Refetching..."}
+        </span>
+        {entryReadAllQuery.isSuccess ? (
+          <EntryList
+            entries={entryReadAllQuery.data}
+            entryDeleteMutation={entryDeleteMutation}
+            entryUpdateMutation={entryUpdateMutation}
+          />
+        ) : entryReadAllQuery.isError ? (
+          <span className="text-red-500">
+            Error: {entryReadAllQuery.error.message}
+          </span>
+        ) : (
+          <div>
+            <span className="text-muted-foreground">Loading...</span>
+
+            <div className="w-full flex flex-col gap-0">
+              <TimelineEntryCardSkeleton />
+              <Connector variant="no_text" />
+              <TimelineEntryCardSkeleton />
+              <Connector variant="no_text" />
+              <TimelineEntryCardSkeleton />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -213,15 +163,15 @@ function AddEntryModalButton({
     }, 100);
   };
 
-  const form = useForm<z.infer<typeof createEntrySchema>>({
-    resolver: zodResolver(createEntrySchema),
+  const form = useForm<z.infer<typeof createTimelineEntrySchema>>({
+    resolver: zodResolver(createTimelineEntrySchema),
     defaultValues: {
       note: "",
       title: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof createEntrySchema>) {
+  function onSubmit(values: z.infer<typeof createTimelineEntrySchema>) {
     entryCreateMutation
       .mutateAsync({
         ...values,
@@ -323,7 +273,7 @@ function EntryList({
     <div className="w-full flex flex-col gap-0">
       {entries.map((entry, index) => (
         <div key={entry.id}>
-          <EntryCardWithEditModal
+          <TimelineEntryCardWithEditModal
             entryUpdateMutation={entryUpdateMutation}
             entryDeleteMutation={entryDeleteMutation}
             key={entry.id}

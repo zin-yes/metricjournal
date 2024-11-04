@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createEntrySchema = z.object({
+export const createTimelineEntrySchema = z.object({
   title: z
     .string()
     .max(256, {
@@ -17,13 +17,13 @@ export const createEntrySchema = z.object({
     .optional(),
 });
 
-export const readEntrySchema = z.object({
+export const readTimelineEntrySchema = z.object({
   id: z.string().min(1, {
     message: "An identifier must be provided to read an entry.",
   }),
 });
 
-export const readAllEntrySchema = z.object({
+export const readAllTimelineEntrySchema = z.object({
   limit: z.number().min(1).max(250).optional(),
   cursor: z.number().min(0).optional(),
 });
@@ -34,7 +34,7 @@ export const readAllEntrySchema = z.object({
 //   cursor: z.number().min(0).optional(),
 // });
 
-export const updateEntrySchema = z.object({
+export const updateTimelineEntrySchema = z.object({
   id: z.string().min(1, {
     message: "An identifier must be provided to update an entry.",
   }),

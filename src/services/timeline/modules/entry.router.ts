@@ -1,23 +1,23 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import {
-  createEntrySchema,
+  createTimelineEntrySchema,
   deleteEntrySchema,
-  readEntrySchema,
-  updateEntrySchema,
-  readAllEntrySchema,
+  readTimelineEntrySchema,
+  updateTimelineEntrySchema,
+  readAllTimelineEntrySchema,
 } from "./entry.input";
 import { entryService } from "./entry.service";
 
 export const entryRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(createEntrySchema)
+    .input(createTimelineEntrySchema)
     .mutation(async ({ input, ctx }) => {
       return entryService.create(ctx.session.user.id, {
         ...input,
       });
     }),
   readAll: protectedProcedure
-    .input(readAllEntrySchema)
+    .input(readAllTimelineEntrySchema)
     .query(async ({ input, ctx }) => {
       return entryService.readAll(
         ctx.session.user.id,
@@ -26,12 +26,12 @@ export const entryRouter = createTRPCRouter({
       );
     }),
   read: protectedProcedure
-    .input(readEntrySchema)
+    .input(readTimelineEntrySchema)
     .query(async ({ input, ctx }) => {
       return entryService.read(ctx.session.user.id, input.id);
     }),
   update: protectedProcedure
-    .input(updateEntrySchema)
+    .input(updateTimelineEntrySchema)
     .mutation(async ({ input, ctx }) => {
       return entryService.update(ctx.session.user.id, input.id, {
         note: input.note ?? null,

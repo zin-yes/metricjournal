@@ -38,14 +38,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Clock, Trash2 } from "lucide-react";
 import React, { useId, useMemo, useRef, useState } from "react";
-import { Entry } from "@/database/schema";
 import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
-import { updateEntrySchema } from "@/services/timeline/modules/entry.input";
 import { TimePickerInput } from "@/components/ui/time-picker-input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { TimelineEntry } from "@/database/schema";
+import { updateTimelineEntrySchema } from "@/services/timeline/modules/entry.input";
 
-export function EntryCardSkeleton() {
+export function TimelineEntryCardSkeleton() {
   return (
     <Card className="w-full cursor-pointer">
       <CardHeader className={"pb-0"}>
@@ -70,14 +70,14 @@ export function EntryCardSkeleton() {
   );
 }
 
-export default function EntryCardWithEditModal({
+export default function TimelineEntryCardWithEditModal({
   entryDeleteMutation,
   entryUpdateMutation,
   entry,
 }: {
-  entryDeleteMutation: ReturnType<typeof api.entry.delete.useMutation>;
-  entryUpdateMutation: ReturnType<typeof api.entry.update.useMutation>;
-  entry: Entry;
+  entryDeleteMutation: ReturnType<typeof api.timeline.entry.delete.useMutation>;
+  entryUpdateMutation: ReturnType<typeof api.timeline.entry.update.useMutation>;
+  entry: TimelineEntry;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -88,15 +88,15 @@ export default function EntryCardWithEditModal({
     }, 100);
   };
 
-  const form = useForm<z.infer<typeof updateEntrySchema>>({
-    resolver: zodResolver(updateEntrySchema),
+  const form = useForm<z.infer<typeof updateTimelineEntrySchema>>({
+    resolver: zodResolver(updateTimelineEntrySchema),
     defaultValues: {
       title: entry.title ?? "",
       note: entry.note ?? "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof updateEntrySchema>) {
+  function onSubmit(values: z.infer<typeof updateTimelineEntrySchema>) {
     entryUpdateMutation
       .mutateAsync({
         id: entry.id,
@@ -114,7 +114,7 @@ export default function EntryCardWithEditModal({
   const formRef = useRef<HTMLFormElement>(null);
   return (
     <>
-      <EntryCard entry={entry} handleOpen={handleOpen} />
+      <TimelineEntryCard entry={entry} handleOpen={handleOpen} />
       <Credenza open={open} onOpenChange={setOpen}>
         <CredenzaContent>
           <CredenzaHeader>
@@ -212,7 +212,7 @@ export default function EntryCardWithEditModal({
               >
                 {entryUpdateMutation.isPending ? "Updating..." : "Submit"}
               </Button>
-              <EntryDeleteModal
+              <TimelineEntryDeleteModal
                 entry={entry}
                 entryDeleteMutation={entryDeleteMutation}
                 onDelete={() => {
@@ -254,12 +254,12 @@ function getAllTags(text: string) {
 
 // FIXME: TODO: add tags in the back-end to data model to make searching more efficient in the future.
 // FEATURE: Add a preference from the user to always show more, or to ask.
-export function EntryCard({
+export function TimelineEntryCard({
   handleOpen,
   entry,
 }: {
   handleOpen: () => void;
-  entry: Entry;
+  entry: TimelineEntry;
 }) {
   const tags = useMemo<string[]>(
     () => getAllTags((entry.note ?? "") + " " + entry.title).toSorted(),
@@ -367,14 +367,14 @@ function ShowMore({ content }: { content: string }) {
   );
 }
 
-export function EntryDeleteModal({
+export function TimelineEntryDeleteModal({
   entryDeleteMutation,
   entry,
   onDelete,
 }: {
-  entryDeleteMutation: ReturnType<typeof api.entry.delete.useMutation>;
+  entryDeleteMutation: ReturnType<typeof api.timeline.entry.delete.useMutation>;
   onDelete: () => void;
-  entry: Entry;
+  entry: TimelineEntry;
 }) {
   const [open, setOpen] = useState(false);
 
