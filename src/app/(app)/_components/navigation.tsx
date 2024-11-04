@@ -52,13 +52,11 @@ export default function Navigation({ session }: { session: SessionResult }) {
             onClick={() => toggleMenu()}
           >
             <motion.div
-              initial={{ rotate: 0, width: "100%" }}
               animate={open ? { rotate: 20, y: 4.5 } : { rotate: 0 }}
               transition={{ duration: 0.7 }}
               className="h-[1px] w-full rounded-lg bg-foreground"
             />
             <motion.div
-              initial={{ width: 0, opacity: 0 }}
               animate={
                 open ? { width: 0, opacity: 0 } : { width: "100%", opacity: 1 }
               }
@@ -66,7 +64,6 @@ export default function Navigation({ session }: { session: SessionResult }) {
               className="h-[1px] w-full rounded-lg bg-foreground"
             ></motion.div>
             <motion.div
-              initial={{ rotate: 0, width: "100%" }}
               animate={open ? { rotate: -20, y: -4.5 } : { rotate: 0 }}
               transition={{ duration: 0.7 }}
               className="h-[1px] w-full rounded-lg bg-foreground"
