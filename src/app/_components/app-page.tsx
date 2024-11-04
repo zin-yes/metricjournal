@@ -117,7 +117,7 @@ export default function AppPageComponent({
     },
   });
 
-  const [open, setOpen] = useState(user !== undefined);
+  const [open, setOpen] = useState(user === undefined);
 
   return (
     <>
