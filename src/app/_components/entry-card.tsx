@@ -233,9 +233,18 @@ export default function EntryCardWithEditModal({
 const TAG_MAX_LENGTH = 64;
 
 function getTags(text: string) {
-  return text
-    .split(/(\s|\n)/)
-    .filter((word) => word.startsWith("#") && word.length - 1 < TAG_MAX_LENGTH);
+  const words = text.split(/(\s|\n)/);
+  const result: string[] = [];
+
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    if (word.startsWith("#") && word.length - 1 < TAG_MAX_LENGTH) {
+      if (!result.includes(word)) {
+        result.push(word);
+      }
+    }
+  }
+  return result;
 }
 
 // FIXME: TODO: add tags in the back-end to data model to make searching more efficient in the future.
