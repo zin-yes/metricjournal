@@ -37,7 +37,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Clock, Trash2 } from "lucide-react";
-import React, { useId, useRef, useState } from "react";
+import React, { useId, useMemo, useRef, useState } from "react";
 import { Entry } from "@/database/schema";
 import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
 import { updateEntrySchema } from "@/server/api/entry/entry.input";
@@ -233,9 +233,14 @@ export default function EntryCardWithEditModal({
 const TAG_MAX_LENGTH = 64;
 
 function getTags(text: string) {
+  return text
+    .split(/(\s|\n)/)
+    .filter((word) => word.startsWith("#") && word.length - 1 < TAG_MAX_LENGTH);
+}
+
+function getAllTags(text: string) {
   const words = text.split(/(\s|\n)/);
   const result: string[] = [];
-
   for (let i = 0; i < words.length; i++) {
     const word = words[i];
     if (word.startsWith("#") && word.length - 1 < TAG_MAX_LENGTH) {
@@ -255,10 +260,10 @@ export function EntryCard({
   handleOpen: () => void;
   entry: Entry;
 }) {
-  const tags = [
-    ...getTags(entry.note ?? ""),
-    ...getTags(entry.title),
-  ].toSorted();
+  const tags = useMemo<string[]>(
+    () => getAllTags((entry.note ?? "") + " " + entry.title).toSorted(),
+    [entry.note, entry.title]
+  );
 
   return (
     <div className="flex flex-col items-center">
