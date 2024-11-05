@@ -70,7 +70,7 @@ export default function AppPageComponent() {
     },
     onError: (error) => {
       toast({
-        title: "Error",
+        title: "An error occured",
         description: error.message,
       });
     },
@@ -88,7 +88,7 @@ export default function AppPageComponent() {
     },
     onError: (error) => {
       toast({
-        title: "Error",
+        title: "An error occured",
         description: error.message,
       });
     },
@@ -105,7 +105,7 @@ export default function AppPageComponent() {
     },
     onError: (error) => {
       toast({
-        title: "Error",
+        title: "An error occured",
         description: error.message,
       });
     },
@@ -113,7 +113,7 @@ export default function AppPageComponent() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-full flex flex-col gap-2 max-w-[700px]">
+      <div className="w-full flex flex-col gap-2 max-w-[800px]">
         <div className="w-full flex flex-row gap-2">
           <ModeToggle />
           <AddEntryModalButton entryCreateMutation={entryCreateMutation} />
@@ -133,8 +133,6 @@ export default function AppPageComponent() {
           </span>
         ) : (
           <div>
-            <span className="text-muted-foreground">Loading...</span>
-
             <div className="w-full flex flex-col gap-0">
               <TimelineEntryCardSkeleton />
               <Connector variant="no_text" />

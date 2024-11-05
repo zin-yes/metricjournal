@@ -2,20 +2,60 @@
 
 import WhenSignedIn from "@/components/utils/when-signed-in";
 import { type SessionResult } from "@/server/api/auth/service/auth.service.types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Wrapper } from "../layout";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import WhenSignedOut from "@/components/utils/when-signed-out";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+const NAVIGATION_MENU_ITMES: { name: string; href: string }[] = [
+  {
+    name: "Journal",
+    href: "/",
+  },
+  {
+    name: "Projects",
+    href: "/projects",
+  },
+];
 
 // TODO: Give this some proper thought
 export default function Navigation({ session }: { session: SessionResult }) {
-  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <DesktopNavigationMenu session={session} items={NAVIGATION_MENU_ITMES} />
+      <MobileNavigationMenu session={session} items={NAVIGATION_MENU_ITMES} />
+    </>
+  );
+}
 
-  const toggleMenu = () => {
-    setOpen(!open);
-  };
+export function DesktopNavigationMenu({
+  session,
+  items,
+}: {
+  session: SessionResult;
+  items: { name: string; href: string }[];
+}) {
+  return (
+    <div className="md:flex flex-col justify-center items-center hidden pt-4 sticky top-0 left-0 right-0 z-[10000] px-6">
+      <header className="flex flex-row justify-between items-center  w-full p-4 border rounded-[var(--radius)] px-6 bg-background/80 backdrop-blur-md max-w-[800px]">
+        <Logo />
+        <ItemList items={items} session={session} />
+      </header>
+    </div>
+  );
+}
+
+function MobileNavigationMenu({
+  session,
+  items,
+}: {
+  session: SessionResult;
+  items: { name: string; href: string }[];
+}) {
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -35,57 +75,124 @@ export default function Navigation({ session }: { session: SessionResult }) {
               duration: 0.5,
               ease: "easeInOut",
             }}
-            className="z-1000 fixed top-0 left-0 right-0 bottom-0 w-[100vw] h-[100vh]"
+            className="z-[9999] fixed top-0 left-0 right-0 bottom-0 w-[100vw] h-[100vh]"
           >
-            <NavigationMenu session={session} />
+            <NavigationMenu items={items} session={session} />
           </motion.div>
         )}
       </AnimatePresence>
-      <header className="sticky top-0 left-0 right-0 bg-background/80 backdrop-blur-md flex flex-row justify-between items-center p-4 px-6 border-b">
-        <div>
-          <h1 className="text-xl font-bold">MetricJournal</h1>
-        </div>
-
-        <AnimatePresence>
-          <div
-            className="h-[10px] w-[24px] flex flex-col justify-between cursor-pointer items-center"
-            onClick={() => toggleMenu()}
-          >
-            <motion.div
-              animate={open ? { rotate: 20, y: 4.5 } : { rotate: 0 }}
-              transition={{ duration: 0.7 }}
-              className="h-[1px] w-full rounded-lg bg-foreground"
-            />
-            <motion.div
-              animate={
-                open ? { width: 0, opacity: 0 } : { width: "100%", opacity: 1 }
-              }
-              transition={{ duration: 0.7 }}
-              className="h-[1px] w-full rounded-lg bg-foreground"
-            ></motion.div>
-            <motion.div
-              animate={open ? { rotate: -20, y: -4.5 } : { rotate: 0 }}
-              transition={{ duration: 0.7 }}
-              className="h-[1px] w-full rounded-lg bg-foreground"
-            />
-          </div>
-        </AnimatePresence>
+      <header className="sticky top-0 left-0 right-0 bg-background/80 backdrop-blur-md flex flex-row justify-between items-center p-4 px-6 border-b z-[10000] md:hidden">
+        <Logo />
+        <ItemList items={items} session={session} />
+        <HamburgerMenu open={open} setOpen={setOpen} />
       </header>
     </>
   );
 }
 
-export function NavigationMenu({ session }: { session: SessionResult }) {
+function Logo() {
   return (
-    <div className="z-1000 absolute top-0 left-0 right-0 bottom-0 w-[100vw] h-[100vh] bg-background/80 backdrop-blur-md border-l">
+    <div>
+      <h1 className="text-xl font-bold">MetricJournal</h1>
+    </div>
+  );
+}
+
+function HamburgerMenu({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: (value: boolean) => void;
+}) {
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    if (!isMobile) {
+      setOpen(false);
+    }
+  }, [isMobile]);
+
+  return (
+    <AnimatePresence>
+      <div
+        className="h-[10px] w-[24px] flex flex-col justify-between cursor-pointer items-center md:hidden"
+        onClick={() => setOpen(!open)}
+      >
+        <motion.div
+          animate={open ? { rotate: 45, y: 4.5 } : { rotate: 0 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="h-[1.5px] w-full rounded-lg bg-foreground"
+        />
+        <motion.div
+          animate={
+            open ? { width: 0, opacity: 0 } : { width: "100%", opacity: 1 }
+          }
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="h-[1.5px] w-full rounded-lg bg-foreground"
+        ></motion.div>
+        <motion.div
+          animate={open ? { rotate: -45, y: -4.5 } : { rotate: 0 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="h-[1.5px] w-full rounded-lg bg-foreground"
+        />
+      </div>
+    </AnimatePresence>
+  );
+}
+
+function ItemList({
+  items,
+  session,
+}: {
+  items: { name: string; href: string }[];
+  session: SessionResult;
+}) {
+  return (
+    <div className="flex-row gap-5 items-center justify-end hidden md:flex">
+      {items.map((item) => (
+        <div key={item.name + "-nav-menu-link"} className="w-fit">
+          <Link href={item.href}>
+            <span className="hover:underline">{item.name}</span>
+          </Link>
+        </div>
+      ))}
+      <WhenSignedOut session={session}>
+        <div className="flex flex-row gap-3 justify-center items-center">
+          <Button variant="outline">
+            <Link href="/signin">Sign In</Link>
+          </Button>
+
+          <Button variant="outline">
+            <Link href="/signup">Sign Up</Link>
+          </Button>
+        </div>
+      </WhenSignedOut>
+      <WhenSignedIn session={session}>
+        <Button variant="outline">
+          <Link href="/signout">Sign Out</Link>
+        </Button>
+      </WhenSignedIn>
+    </div>
+  );
+}
+
+export function NavigationMenu({
+  session,
+  items,
+}: {
+  session: SessionResult;
+  items: { name: string; href: string }[];
+}) {
+  return (
+    <div className="z-1000 absolute top-0 left-0 right-0 bottom-0 w-[100vw] h-[100vh] bg-background/80 backdrop-blur-md border-l z-[9999]">
       <nav className="w-full h-full px-6 pt-20 pb-6 flex flex-col justify-between">
         <ul>
-          <Link href="/">
-            <li className="underline text-xl">Journal</li>
-          </Link>
-          <Link href="/projects">
-            <li className="underline text-xl">Projects</li>
-          </Link>
+          {items.map((item) => (
+            <Link key={item.name} href={item.href}>
+              <li className="underline text-xl">{item.name}</li>
+            </Link>
+          ))}
         </ul>
         <div className="w-full flex flex-col gap-2">
           <WhenSignedOut session={session}>

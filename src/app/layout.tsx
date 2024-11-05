@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 // TODO: Add translations
 export const defaultLanguage = "en";
 
+// TODO: Add session provider, and useSession hook if better-auth isnt adding it by v1
 export default function RootLayout({
   children,
 }: Readonly<{
