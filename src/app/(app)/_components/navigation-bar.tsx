@@ -5,7 +5,7 @@ import Link from "next/link";
 // TODO: Add a dropdown menu for user settings (i.e. signout, change name et cetera)
 export default function NavigationBar({ user }: { user: any }) {
   return (
-    <header className="sticky w-full top-0 left-0 right-0 z-50 h-fit py-3 px-4 bg-background/80 border-b backdrop-blur-lg md:hidden">
+    <header className="sticky w-full top-0 left-0 right-0 h-fit py-3 px-4 bg-background/80 border-b backdrop-blur-lg md:hidden">
       <div className="flex flex-row justify-between items-center">
         <h1 className="text-xl font-bold">MetricJournal</h1>
         {user !== undefined ? (
@@ -17,11 +17,11 @@ export default function NavigationBar({ user }: { user: any }) {
           </div>
         ) : (
           <div className="flex flex-row gap-2">
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="bg-transparent">
               <Link href="/signin">Sign In</Link>
             </Button>
 
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="bg-transparent">
               <Link href="/signup">Sign Up</Link>
             </Button>
           </div>

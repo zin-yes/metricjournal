@@ -1,7 +1,8 @@
-import { authService } from "@/server/api/auth/service/auth.service";
 import React from "react";
 import Navigation from "./_components/navigation";
 import SignInPrompt from "./_components/login-prompt";
+import { authService } from "@/services/auth/auth.service";
+import { NAVIGATION_MENU_ITMES } from "@/app/(app)/config";
 
 export default async function AppLayout({
   children,
@@ -12,7 +13,7 @@ export default async function AppLayout({
 
   return (
     <>
-      <Navigation session={session} />
+      <Navigation items={NAVIGATION_MENU_ITMES} session={session} />
       {!session ? <SignInPrompt /> : null}
       <Wrapper>{children}</Wrapper>
     </>

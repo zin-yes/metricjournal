@@ -1,32 +1,27 @@
 "use client";
 
 import WhenSignedIn from "@/components/utils/when-signed-in";
-import { type SessionResult } from "@/server/api/auth/service/auth.service.types";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Wrapper } from "../layout";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import WhenSignedOut from "@/components/utils/when-signed-out";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-const NAVIGATION_MENU_ITMES: { name: string; href: string }[] = [
-  {
-    name: "Journal",
-    href: "/",
-  },
-  {
-    name: "Projects",
-    href: "/projects",
-  },
-];
+import { SessionResult } from "@/services/auth/auth.service";
+import { useInnerWindowSize } from "@/hooks/use-inner-window-size";
 
 // TODO: Give this some proper thought
-export default function Navigation({ session }: { session: SessionResult }) {
+export default function Navigation({
+  session,
+  items,
+}: {
+  session: SessionResult;
+  items: { name: string; href: string }[];
+}) {
   return (
     <>
-      <DesktopNavigationMenu session={session} items={NAVIGATION_MENU_ITMES} />
-      <MobileNavigationMenu session={session} items={NAVIGATION_MENU_ITMES} />
+      <DesktopNavigationMenu session={session} items={items} />
+      <MobileNavigationMenu session={session} items={items} />
     </>
   );
 }
@@ -39,7 +34,7 @@ export function DesktopNavigationMenu({
   items: { name: string; href: string }[];
 }) {
   return (
-    <div className="md:flex flex-col justify-center items-center hidden pt-4 sticky top-0 left-0 right-0 z-[10000] px-6">
+    <div className="md:flex flex-col justify-center items-center hidden pt-4 sticky top-0 left-0 right-0 px-6">
       <header className="flex flex-row justify-between items-center  w-full p-4 border rounded-[var(--radius)] px-6 bg-background/80 backdrop-blur-md max-w-[800px]">
         <Logo />
         <ItemList items={items} session={session} />
@@ -75,13 +70,13 @@ function MobileNavigationMenu({
               duration: 0.5,
               ease: "easeInOut",
             }}
-            className="z-[9999] fixed top-0 left-0 right-0 bottom-0 w-[100vw] h-[100vh]"
+            className="fixed top-0 left-0 right-0 bottom-0 w-[100vw] h-[100vh]"
           >
             <NavigationMenu items={items} session={session} />
           </motion.div>
         )}
       </AnimatePresence>
-      <header className="sticky top-0 left-0 right-0 bg-background/80 backdrop-blur-md flex flex-row justify-between items-center p-4 px-6 border-b z-[10000] md:hidden">
+      <header className="sticky top-0 left-0 right-0 bg-background/80 backdrop-blur-md flex flex-row justify-between items-center p-4 px-6 border-b  md:hidden">
         <Logo />
         <ItemList items={items} session={session} />
         <HamburgerMenu open={open} setOpen={setOpen} />
@@ -111,7 +106,7 @@ function HamburgerMenu({
     if (!isMobile) {
       setOpen(false);
     }
-  }, [isMobile]);
+  }, [isMobile, setOpen]);
 
   return (
     <AnimatePresence>
@@ -120,7 +115,7 @@ function HamburgerMenu({
         onClick={() => setOpen(!open)}
       >
         <motion.div
-          animate={open ? { rotate: 45, y: 4.5 } : { rotate: 0 }}
+          animate={open ? { rotate: 45, y: 4.38 } : { rotate: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
           className="h-[1.5px] w-full rounded-lg bg-foreground"
         />
@@ -132,7 +127,7 @@ function HamburgerMenu({
           className="h-[1.5px] w-full rounded-lg bg-foreground"
         ></motion.div>
         <motion.div
-          animate={open ? { rotate: -45, y: -4.5 } : { rotate: 0 }}
+          animate={open ? { rotate: -45, y: -4.38 } : { rotate: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
           className="h-[1.5px] w-full rounded-lg bg-foreground"
         />
@@ -184,9 +179,13 @@ export function NavigationMenu({
   session: SessionResult;
   items: { name: string; href: string }[];
 }) {
+  const { innerWidth, innerHeight } = useInnerWindowSize();
+
   return (
-    <div className="z-1000 absolute top-0 left-0 right-0 bottom-0 w-[100vw] h-[100vh] bg-background/80 backdrop-blur-md border-l z-[9999]">
-      <nav className="w-full h-full px-6 pt-20 pb-6 flex flex-col justify-between">
+    <div
+      className={`absolute top-0 left-0 right-0 bottom-0 w-[${innerWidth}px] h-[${innerHeight}px] bg-background/80 backdrop-blur-md border-l`}
+    >
+      <nav className="w-full px-6 pt-20 pb-6 flex flex-col justify-between">
         <ul>
           {items.map((item) => (
             <Link key={item.name} href={item.href}>

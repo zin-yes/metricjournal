@@ -1,4 +1,4 @@
-import { createTRPCRouter } from "@/server/api/trpc";
+import { createTRPCRouter } from "@/services/trpc";
 import { projectRouter } from "@/services/project/project.router";
 import { timelineRouter } from "@/services/timeline/timeline.router";
 

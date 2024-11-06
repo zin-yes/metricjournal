@@ -29,11 +29,8 @@ import {
 import { useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { createTimelineEntrySchema } from "@/services/timeline/modules/entry.input";
-import Link from "next/link";
 import moment from "moment";
-import { UserResult } from "@/server/api/auth/service/auth.service.types";
 import { TimelineEntry } from "@/database/schema";
 import ModeToggle from "./_components/mode-toggle";
 import TimelineEntryCardWithEditModal, {

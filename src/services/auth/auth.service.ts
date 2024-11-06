@@ -3,7 +3,21 @@ import "server-only";
 import { Logger } from "@/utils/logger";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { type SessionResult, type UserResult } from "./auth.service.types";
+
+export type Session = Awaited<ReturnType<typeof auth.api.getSession>>;
+export type SessionResult = Session | undefined;
+
+export type User = {
+  id: string;
+  email: string;
+  emailVerified: boolean;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  image?: string | undefined;
+};
+
+export type UserResult = User;
 
 class AuthService {
   private readonly logger = new Logger(AuthService.name);

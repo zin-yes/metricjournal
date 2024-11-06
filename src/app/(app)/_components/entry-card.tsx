@@ -45,6 +45,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { TimelineEntry } from "@/database/schema";
 import { updateTimelineEntrySchema } from "@/services/timeline/modules/entry.input";
 
+// TODO: Retroactively be able to easily add entries.
+
 export function TimelineEntryCardSkeleton() {
   return (
     <Card className="w-full cursor-pointer">
