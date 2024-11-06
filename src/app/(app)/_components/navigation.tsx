@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import WhenSignedOut from "@/components/utils/when-signed-out";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { SessionResult } from "@/services/auth/auth.service";
+import { type SessionResult } from "@/services/auth/auth.service";
 import { useInnerWindowSize } from "@/hooks/use-inner-window-size";
 
 // TODO: Give this some proper thought

@@ -1,4 +1,4 @@
-import { type SessionResult } from "@/server/api/auth/service/auth.service.types";
+import { type SessionResult } from "@/services/auth/auth.service";
 
 export default function WhenSignedOut({
   children,
