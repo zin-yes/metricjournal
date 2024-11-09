@@ -1,12 +1,12 @@
-import { type SessionResult } from "@/services/auth/auth.service";
+import { useSession } from "@/hooks/use-session";
 
 export default function WhenSignedOut({
   children,
-  session,
 }: {
   children: React.ReactNode;
-  session: SessionResult;
 }) {
+  const session = useSession();
+
   if (session?.user) return null;
 
   return children;

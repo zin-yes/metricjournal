@@ -1,16 +1,27 @@
 import { TRPCReactProvider } from "@/trpc/react";
-import React from "react";
-import { ThemeProvider } from "./theme-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { SessionProvider } from "@/providers/session-provider";
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+import React from "react";
+import { SessionResult } from "@/services/auth/auth.service";
+
+export default function Providers({
+  session,
+  children,
+}: {
+  session: SessionResult;
+  children: React.ReactNode;
+}) {
   return (
     <TRPCReactProvider>
       <ThemeProvider>
-        <Toaster />
-        <div vaul-drawer-wrapper="" className="bg-background">
-          {children}
-        </div>
+        <SessionProvider session={session}>
+          <Toaster />
+          <div vaul-drawer-wrapper="" className="bg-background">
+            {children}
+          </div>
+        </SessionProvider>
       </ThemeProvider>
     </TRPCReactProvider>
   );

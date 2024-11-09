@@ -1,12 +1,12 @@
-import { type SessionResult } from "@/services/auth/auth.service";
+import { useSession } from "@/hooks/use-session";
 
 export default function WhenSignedIn({
-  session,
   children,
 }: {
-  session: SessionResult;
   children: React.ReactNode;
 }) {
+  const session = useSession();
+
   if (session?.user) return children;
 
   return null;

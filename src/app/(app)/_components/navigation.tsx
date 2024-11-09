@@ -152,7 +152,7 @@ function ItemList({
           </Link>
         </div>
       ))}
-      <WhenSignedOut session={session}>
+      <WhenSignedOut>
         <div className="flex flex-row gap-3 justify-center items-center">
           <Button variant="outline">
             <Link href="/signin">Sign In</Link>
@@ -163,7 +163,7 @@ function ItemList({
           </Button>
         </div>
       </WhenSignedOut>
-      <WhenSignedIn session={session}>
+      <WhenSignedIn>
         <Button variant="outline">
           <Link href="/signout">Sign Out</Link>
         </Button>
@@ -194,7 +194,7 @@ export function NavigationMenu({
           ))}
         </ul>
         <div className="w-full flex flex-col gap-2">
-          <WhenSignedOut session={session}>
+          <WhenSignedOut>
             <Button className="w-full" variant="default" size="icon">
               <Link href="/signin">Sign In</Link>
             </Button>
@@ -203,7 +203,7 @@ export function NavigationMenu({
               <Link href="/signup">Sign Up</Link>
             </Button>
           </WhenSignedOut>
-          <WhenSignedIn session={session}>
+          <WhenSignedIn>
             <Button className="w-full" variant="default" size="icon">
               <Link href="/signout">Sign Out</Link>
             </Button>
