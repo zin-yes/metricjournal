@@ -130,11 +130,11 @@ export default function AppPageComponent() {
           </span>
         ) : (
           <div>
-            <div className="w-full flex flex-col gap-0">
+            <div className="w-full flex flex-col gap-0 mt-[20px]">
               <TimelineEntryCardSkeleton />
-              <Connector variant="no_text" />
+              <Connector />
               <TimelineEntryCardSkeleton />
-              <Connector variant="no_text" />
+              <Connector />
               <TimelineEntryCardSkeleton />
             </div>
           </div>
