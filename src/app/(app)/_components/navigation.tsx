@@ -37,7 +37,7 @@ export function DesktopNavigationMenu({
     <div className="md:flex flex-col justify-center items-center hidden pt-4 sticky top-0 left-0 right-0 px-6">
       <header className="flex flex-row justify-between items-center  w-full p-4 border rounded-[var(--radius)] px-6 bg-background/80 backdrop-blur-md max-w-[800px]">
         <Logo />
-        <ItemList items={items} session={session} />
+        <ItemList items={items} />
       </header>
     </div>
   );
@@ -72,13 +72,13 @@ function MobileNavigationMenu({
             }}
             className="fixed top-0 left-0 right-0 bottom-0 w-[100vw] h-[100vh]"
           >
-            <NavigationMenu items={items} session={session} />
+            <NavigationMenu items={items} />
           </motion.div>
         )}
       </AnimatePresence>
       <header className="sticky top-0 left-0 right-0 bg-background/80 backdrop-blur-md flex flex-row justify-between items-center p-4 px-6 border-b  md:hidden">
         <Logo />
-        <ItemList items={items} session={session} />
+        <ItemList items={items} />
         <HamburgerMenu open={open} setOpen={setOpen} />
       </header>
     </>
@@ -136,13 +136,7 @@ function HamburgerMenu({
   );
 }
 
-function ItemList({
-  items,
-  session,
-}: {
-  items: { name: string; href: string }[];
-  session: SessionResult;
-}) {
+function ItemList({ items }: { items: { name: string; href: string }[] }) {
   return (
     <div className="flex-row gap-5 items-center justify-end hidden md:flex">
       {items.map((item) => (
@@ -173,10 +167,8 @@ function ItemList({
 }
 
 export function NavigationMenu({
-  session,
   items,
 }: {
-  session: SessionResult;
   items: { name: string; href: string }[];
 }) {
   const { innerWidth, innerHeight } = useInnerWindowSize();
@@ -185,7 +177,7 @@ export function NavigationMenu({
     <div
       className={`absolute top-0 left-0 right-0 bottom-0 w-[${innerWidth}px] h-[${innerHeight}px] bg-background/80 backdrop-blur-md border-l`}
     >
-      <nav className="w-full px-6 pt-20 pb-6 flex flex-col justify-between">
+      <nav className="w-full h-full px-6 pt-20 pb-6 flex flex-col justify-between">
         <ul>
           {items.map((item) => (
             <Link key={item.name} href={item.href}>
