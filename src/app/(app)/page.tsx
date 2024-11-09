@@ -110,14 +110,14 @@ export default function AppPageComponent() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-full flex flex-col gap-2 max-w-[800px]">
+      <div className="w-full flex flex-col gap-5 max-w-[800px]">
         <div className="w-full flex flex-row gap-2">
           <ModeToggle />
           <AddEntryModalButton entryCreateMutation={entryCreateMutation} />
         </div>
-        <span className="text-muted-foreground">
+        {/* <span className="text-muted-foreground">
           {entryReadAllQuery.isRefetching && "Refetching..."}
-        </span>
+        </span> */}
         {entryReadAllQuery.isSuccess ? (
           <EntryList
             entries={entryReadAllQuery.data}
@@ -130,11 +130,11 @@ export default function AppPageComponent() {
           </span>
         ) : (
           <div>
-            <div className="w-full flex flex-col gap-0 mt-[20px]">
+            <div className="w-full flex flex-col gap-0">
               <TimelineEntryCardSkeleton />
-              <Connector />
+              <Connector variant={"no_text"} />
               <TimelineEntryCardSkeleton />
-              <Connector />
+              <Connector variant={"no_text"} />
               <TimelineEntryCardSkeleton />
             </div>
           </div>

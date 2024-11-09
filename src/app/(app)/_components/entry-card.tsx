@@ -49,26 +49,31 @@ import { updateTimelineEntrySchema } from "@/services/timeline/modules/entry.inp
 
 export function TimelineEntryCardSkeleton() {
   return (
-    <Card className="w-full cursor-pointer">
-      <CardHeader className={"pb-0"}>
-        <CardTitle>
-          <Skeleton className="w-40 h-4" />
-        </CardTitle>
-      </CardHeader>
-
-      <div className="flex flex-wrap gap-2 border-b border-t my-6 p-6 py-4">
-        <Skeleton className="w-12 h-4 px-2.5 py-0.5 rounded-xl text-xs bg-muted" />
-        <Skeleton className="w-24 h-4 px-2.5 py-0.5 rounded-xl text-xs bg-muted" />
-        <Skeleton className="w-16 h-4 px-2.5 py-0.5 rounded-xl text-xs bg-muted" />
+    <div className="flex flex-col items-center">
+      <div className="px-3 rounded-t-[var(--radius)] border w-fit border-b-0 h-5 flex justify-center items-end">
+        <span className="h-4 w-12"></span>
       </div>
+      <Card className="w-full cursor-pointer">
+        <CardHeader className={"pb-0"}>
+          <CardTitle>
+            <Skeleton className="w-40 h-4" />
+          </CardTitle>
+        </CardHeader>
 
-      <CardContent className={""}>
-        <Skeleton className="w-full h-4" />
-      </CardContent>
-      <CardFooter>
-        <Skeleton className="w-40 h-4" />
-      </CardFooter>
-    </Card>
+        <div className="flex flex-wrap gap-2 border-b border-t my-6 p-6 py-4">
+          <Skeleton className="w-12 h-4 px-2.5 py-0.5 rounded-xl text-xs bg-muted" />
+          <Skeleton className="w-24 h-4 px-2.5 py-0.5 rounded-xl text-xs bg-muted" />
+          <Skeleton className="w-16 h-4 px-2.5 py-0.5 rounded-xl text-xs bg-muted" />
+        </div>
+
+        <CardContent className={"mt-1 mb-2"}>
+          <Skeleton className="w-full h-4" />
+        </CardContent>
+        <CardFooter>
+          <Skeleton className="w-40 h-4" />
+        </CardFooter>
+      </Card>
+    </div>
   );
 }
 
