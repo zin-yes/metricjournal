@@ -7,15 +7,12 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import WhenSignedOut from "@/components/utils/when-signed-out";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { type SessionResult } from "@/services/auth/auth.service";
 import { useInnerWindowSize } from "@/hooks/use-inner-window-size";
 
 // TODO: Give this some proper thought
 export default function Navigation({
-  session,
   items,
 }: {
-  session: SessionResult;
   items: { name: string; href: string }[];
 }) {
   return (
@@ -33,7 +30,7 @@ export function DesktopNavigationMenu({
 }) {
   return (
     <div className="md:flex flex-col justify-center items-center hidden pt-4 sticky top-0 left-0 right-0 px-6">
-      <header className="flex flex-row justify-between items-center  w-full p-4 border rounded-[var(--radius)] px-6 bg-background/80 backdrop-blur-md max-w-[800px]">
+      <header className="flex flex-row justify-between items-center  w-full p-4 border rounded-[var(--radius)] px-6 bg-background/70 backdrop-blur-md max-w-[800px]">
         <Logo />
         <ItemList items={items} />
       </header>
@@ -72,7 +69,7 @@ function MobileNavigationMenu({
           </motion.div>
         )}
       </AnimatePresence>
-      <header className="sticky top-0 left-0 right-0 bg-background/80 backdrop-blur-md flex flex-row justify-between items-center p-4 px-6 border-b md:hidden">
+      <header className="sticky top-0 left-0 right-0 bg-background/70 backdrop-blur-md flex flex-row justify-between items-center p-4 px-6 border-b md:hidden">
         <Logo />
         <ItemList items={items} />
         <HamburgerMenu open={open} setOpen={setOpen} />
@@ -171,7 +168,7 @@ export function NavigationMenu({
 
   return (
     <div
-      className={`absolute top-0 left-0 right-0 bottom-0 w-[${innerWidth}px] h-[${innerHeight}px] bg-background/80 backdrop-blur-md border-l`}
+      className={`absolute top-0 left-0 right-0 bottom-0 w-[${innerWidth}px] h-[${innerHeight}px] bg-background/70 backdrop-blur-md border-l`}
     >
       <nav className="w-full h-full px-6 pt-20 pb-6 flex flex-col justify-between">
         <ul>

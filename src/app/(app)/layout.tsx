@@ -13,7 +13,7 @@ export default async function AppLayout({
 
   return (
     <>
-      <Navigation items={NAVIGATION_MENU_ITMES} session={session} />
+      <Navigation items={NAVIGATION_MENU_ITMES} />
       {!session ? <SignInPrompt /> : null}
       <Wrapper>{children}</Wrapper>
     </>
