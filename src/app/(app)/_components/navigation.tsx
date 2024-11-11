@@ -20,17 +20,15 @@ export default function Navigation({
 }) {
   return (
     <>
-      <DesktopNavigationMenu session={session} items={items} />
-      <MobileNavigationMenu session={session} items={items} />
+      <DesktopNavigationMenu items={items} />
+      <MobileNavigationMenu items={items} />
     </>
   );
 }
 
 export function DesktopNavigationMenu({
-  session,
   items,
 }: {
-  session: SessionResult;
   items: { name: string; href: string }[];
 }) {
   return (
@@ -44,10 +42,8 @@ export function DesktopNavigationMenu({
 }
 
 function MobileNavigationMenu({
-  session,
   items,
 }: {
-  session: SessionResult;
   items: { name: string; href: string }[];
 }) {
   const [open, setOpen] = useState(false);
@@ -76,7 +72,7 @@ function MobileNavigationMenu({
           </motion.div>
         )}
       </AnimatePresence>
-      <header className="sticky top-0 left-0 right-0 bg-background/80 backdrop-blur-md flex flex-row justify-between items-center p-4 px-6 border-b  md:hidden">
+      <header className="sticky top-0 left-0 right-0 bg-background/80 backdrop-blur-md flex flex-row justify-between items-center p-4 px-6 border-b md:hidden">
         <Logo />
         <ItemList items={items} />
         <HamburgerMenu open={open} setOpen={setOpen} />
@@ -115,7 +111,7 @@ function HamburgerMenu({
         onClick={() => setOpen(!open)}
       >
         <motion.div
-          animate={open ? { rotate: 45, y: 4.38 } : { rotate: 0 }}
+          animate={open ? { rotate: 45, y: 4.38, width: 20 } : { rotate: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
           className="h-[1.5px] w-full rounded-lg bg-foreground"
         />
@@ -127,7 +123,7 @@ function HamburgerMenu({
           className="h-[1.5px] w-full rounded-lg bg-foreground"
         ></motion.div>
         <motion.div
-          animate={open ? { rotate: -45, y: -4.38 } : { rotate: 0 }}
+          animate={open ? { rotate: -45, y: -4.38, width: 20 } : { rotate: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
           className="h-[1.5px] w-full rounded-lg bg-foreground"
         />

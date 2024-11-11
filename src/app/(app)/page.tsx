@@ -37,11 +37,13 @@ import TimelineEntryCardWithEditModal, {
   TimelineEntryCardSkeleton,
 } from "./_components/entry-card";
 import { Connector } from "./_components/connector";
+import { useIsAuthenticated } from "@/hooks/use-is-authenticated";
 
 // TODO: Refactor page and split different parts into components of their own.
 // TODO: Start/set the created at time to when the add entry modal is opened. Then also record how long it takes from when the user starts writing to when they stop.
 export default function AppPageComponent() {
   const { toast } = useToast();
+  const isAuthenticated = useIsAuthenticated();
 
   const entryReadAllQuery = api.timeline.entry.readAll.useQuery(
     {
@@ -49,6 +51,7 @@ export default function AppPageComponent() {
       cursor: 0,
     },
     {
+      enabled: isAuthenticated,
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       refetchOnReconnect: true,
