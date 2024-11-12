@@ -86,7 +86,7 @@ function MobileNavigationMenu({
           <HamburgerMenu open={open} setOpen={setOpen} />
         </motion.div>
         <motion.div
-          className="w-full h-[0px] border-b"
+          className="w-full h-[1px] bg-border/70 backdrop-blur-md"
           animate={
             open ? { width: 0, opacity: 0 } : { width: "100%", opacity: 1 }
           }
