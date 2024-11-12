@@ -29,8 +29,8 @@ export function DesktopNavigationMenu({
   items: { name: string; href: string }[];
 }) {
   return (
-    <div className="md:flex flex-col justify-center items-center hidden pt-4 sticky top-0 left-0 right-0 px-6">
-      <header className="flex flex-row justify-between items-center  w-full p-4 border rounded-[var(--radius)] px-6 bg-background/70 backdrop-blur-md max-w-[800px]">
+    <div className="md:flex flex-col justify-center items-center hidden pt-4 sticky top-0 left-0 right-0 px-6 pointer-events-none">
+      <header className="flex flex-row justify-between items-center  w-full p-4 border rounded-[var(--radius)] px-6 bg-background/70 backdrop-blur-md max-w-[800px] pointer-events-auto">
         <Logo />
         <ItemList items={items} />
       </header>
@@ -60,7 +60,7 @@ function MobileNavigationMenu({
               x: 0,
             }}
             transition={{
-              duration: 0.5,
+              duration: 0.8,
               ease: "easeInOut",
             }}
             className="fixed top-0 left-0 right-0 bottom-0 w-[100vw] h-[100vh]"
@@ -69,10 +69,28 @@ function MobileNavigationMenu({
           </motion.div>
         )}
       </AnimatePresence>
-      <header className="sticky top-0 left-0 right-0 bg-background/70 backdrop-blur-md flex flex-row justify-between items-center p-4 px-6 border-b md:hidden">
-        <Logo />
-        <ItemList items={items} />
-        <HamburgerMenu open={open} setOpen={setOpen} />
+      <header className="sticky top-0 left-0 right-0  flex flex-col justify-between items-center md:hidden">
+        <motion.div
+          className="w-full h-full flex flex-row justify-between items-center p-4 px-6 bg-background/70 backdrop-blur-md"
+          animate={
+            open
+              ? { background: "rgba(0,0,0,0)", backdropFilter: "none" }
+              : {
+                  background: "hsla(var(--background), 0.7)",
+                  backdropFilter: "blur(20px)",
+                }
+          }
+        >
+          <Logo />
+          <ItemList items={items} />
+          <HamburgerMenu open={open} setOpen={setOpen} />
+        </motion.div>
+        <motion.div
+          className="w-full h-[0px] border-b"
+          animate={
+            open ? { width: 0, opacity: 0 } : { width: "100%", opacity: 1 }
+          }
+        />
       </header>
     </>
   );
@@ -151,7 +169,7 @@ function ItemList({ items }: { items: { name: string; href: string }[] }) {
         </div>
       </WhenSignedOut>
       <WhenSignedIn>
-        <Button variant="outline">
+        <Button variant="outline" className="bg-transparent">
           <Link href="/signout">Sign Out</Link>
         </Button>
       </WhenSignedIn>
@@ -168,7 +186,7 @@ export function NavigationMenu({
 
   return (
     <div
-      className={`absolute top-0 left-0 right-0 bottom-0 w-[${innerWidth}px] h-[${innerHeight}px] bg-background/70 backdrop-blur-md border-l`}
+      className={`absolute top-0 left-0 right-0 bottom-0 w-[${innerWidth}px] h-[${innerHeight}px] bg-background/70 backdrop-blur-md`}
     >
       <nav className="w-full h-full px-6 pt-20 pb-6 flex flex-col justify-between">
         <ul>
@@ -180,16 +198,16 @@ export function NavigationMenu({
         </ul>
         <div className="w-full flex flex-col gap-2">
           <WhenSignedOut>
-            <Button className="w-full" variant="default" size="icon">
+            <Button className="w-full" variant="default">
               <Link href="/signin">Sign In</Link>
             </Button>
 
-            <Button className="w-full" variant="default" size="icon">
+            <Button className="w-full" variant="default">
               <Link href="/signup">Sign Up</Link>
             </Button>
           </WhenSignedOut>
           <WhenSignedIn>
-            <Button className="w-full" variant="default" size="icon">
+            <Button className="w-full" variant="default">
               <Link href="/signout">Sign Out</Link>
             </Button>
           </WhenSignedIn>
