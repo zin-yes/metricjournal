@@ -81,7 +81,7 @@ export default function SignIn() {
               email: email,
               password: password,
               callbackURL: "/",
-              dontRememberMe: !rememberMe,
+              rememberMe,
             },
             {
               onRequest: () => {
