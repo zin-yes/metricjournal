@@ -9,12 +9,12 @@ export type SessionResult = Session | undefined;
 
 export type User = {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
   email: string;
   emailVerified: boolean;
   name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  image?: string | undefined;
+  image?: string | null | undefined;
 };
 
 export type UserResult = User;
